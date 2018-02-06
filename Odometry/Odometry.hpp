@@ -20,6 +20,7 @@ class Odometry
 {
     public:
 
+        Odometry();
         /**
          * Initialization with displacement
          * and noise model types
@@ -56,6 +57,8 @@ class Odometry
         double setParameters(
             const Eigen::VectorXd& params);
 
+        std::vector<std::string> getParametersNames() const;
+
         /**
          * Return parameter normalization 
          * coefficients for displacement 
@@ -91,13 +94,20 @@ class Odometry
 
         /**
          * Update pose state by integrating given
-         * relative displacement between two right to left
+         * relative displacement between two
          * support foot transition (dX, dY, dTheta) 
          * (meter, radian).
          */
         void updateFullStep(
             const Eigen::Vector3d& deltaPose,
             std::default_random_engine* engine);
+
+        /**
+         * Sample the difference of position in the robot referential
+         */
+        Eigen::Vector3d getDiffFullStep(
+            const Eigen::Vector3d& deltaPose,
+            std::default_random_engine* engine) const;
 
         /**
          * Return current corrected odometry state
@@ -120,6 +130,16 @@ class Odometry
         void odometryInt(
             const Eigen::Vector3d& diff,
             Eigen::Vector3d& state) const;
+
+        /**
+         * Build an odometry from the specified file
+         */
+        void saveToFile(const std::string & path) const;
+
+        /**
+         * Build an odometry from the specified file
+         */
+        void loadFromFile(const std::string & path);
 
     private:
 
@@ -144,16 +164,15 @@ class Odometry
         Leph::HumanoidFixedModel::SupportFoot _support;
 
         /**
-         * Input Model robot pose (self in 
+         * Input Model robot pose (self in <
          * origin) in world frame at last 
-         * right to left support foot swap
+         * support foot swap
          */
         Eigen::Vector3d _last;
 
         /**
          * Output corrected robot pose in
-         * world frame at last right to left
-         * support foot swap.
+         * world frame at last support foot swap.
          */
         Eigen::Vector3d _state;
 

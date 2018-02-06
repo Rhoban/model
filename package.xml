@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<package>
+  <name>model</name>
+  <version>0.0.0</version>
+  <description>A fixed version of lwpr with catkin support</description>
+
+  <maintainer email="qrouxel@labri.fr">Quentin Rouxel</maintainer>
+  <author email="qrouxel@labri.fr">Quentin Rouxel</author>
+
+  <license>TODO</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <build_depend>eigen</build_depend> <!-- rhobandeps/eigen -->
+  <build_depend>lwpr</build_depend> <!-- rhobandeps/lwpr -->
+  <build_depend>libgp</build_depend> <!-- rhobandeps/libgp -->
+  <build_depend>libcmaes</build_depend> <!-- rhobandeps/libcmaes -->
+  <build_depend>rbdl_urdfreader</build_depend> <!-- rhobandeps/rbdl -->
+  <build_depend>RhIOClient</build_depend> <!-- rhoban/rhio -->
+  <build_depend>RhAL</build_depend> <!-- rhoban/rhal -->
+
+  <run_depend>eigen</run_depend>
+  <run_depend>lwpr</run_depend>
+  <run_depend>libgp</run_depend>
+  <run_depend>libcmaes</run_depend>
+  <run_depend>rbdl_urdfreader</run_depend>
+  <run_depend>RhAL</run_depend>
+  <run_depend>RhIOClient</run_depend>
+
+  <export>
+  </export>
+</package>

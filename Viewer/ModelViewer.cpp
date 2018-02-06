@@ -450,7 +450,7 @@ void ModelViewer::drawText(
     //Size in pixel
     text.setCharacterSize(size);
     //Color
-    text.setFillColor(sf::Color(r*255, g*255, b*255));
+    // text.setFillColor(sf::Color(r*255, g*255, b*255));
     //Position
     text.move(pixel.x(), pixel.y());
 

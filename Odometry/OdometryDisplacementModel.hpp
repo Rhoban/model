@@ -1,6 +1,7 @@
 #ifndef LEPH_ODOMETRYDISPLACEMENTMODEL_HPP
 #define LEPH_ODOMETRYDISPLACEMENTMODEL_HPP
 
+#include <vector>
 #include <Eigen/Dense>
 
 namespace Leph {
@@ -60,6 +61,8 @@ class OdometryDisplacementModel
          */
         double setParameters(
             const Eigen::VectorXd& params);
+
+        std::vector<std::string> getParametersNames() const;
 
         /**
          * Return parameter normalization 

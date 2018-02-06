@@ -58,7 +58,9 @@ class OdometryNoiseModel
          */
         double setParameters(
             const Eigen::VectorXd& params);
-        
+
+        std::vector<std::string> getParametersNames() const;
+
         /**
          * Return parameter normalization 
          * coefficients

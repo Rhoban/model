@@ -14,7 +14,7 @@ int main(int argc, char** argv)
     //Parse command line arguments
     if (argc <= 1 || argc >= 5) {
         std::cout 
-            << "Usage: ./app robothost [rhio_prefix] [sigmaban|grosban]" 
+            << "Usage: ./app robothost [rhio_prefix] [sigmaban|sigmaban_plus|grosban]" 
             << std::endl;
         return -1;
     }
@@ -35,6 +35,8 @@ int main(int argc, char** argv)
     if (argc >= 4) {
         if (std::string(argv[3]) == "sigmaban") {
             type = Leph::SigmabanModel;
+        } else if (std::string(argv[3]) == "sigmaban_plus") {
+            type = Leph::SigmabanPlusModel;
         } else if (std::string(argv[3]) == "grosban") {
             type = Leph::GrosbanModel;
         } else {
@@ -49,10 +51,13 @@ int main(int argc, char** argv)
     std::cout << "Connecting to RhIO " << host << ":" << prefix << " with ";
     std::cout << (type == Leph::SigmabanModel ? "Sigmaban" : "Grosban") 
         << " model" << std::endl;
-    RhIO::ClientSub clientSub(
-        std::string("tcp://" + host + ":") + RhIO::ServerPubPort);
-    RhIO::ClientReq clientReq(
-        std::string("tcp://" + host + ":") + RhIO::ServerRepPort);
+
+    std::stringstream ss;
+    ss << "tcp://" << host << ":" << (RhIO::ServersPortBase);
+    RhIO::ClientSub clientSub(ss.str());
+    ss.str("");
+    ss << "tcp://" << host << ":" << (RhIO::ServersPortBase+1);
+    RhIO::ClientReq clientReq(ss.str());
     
     //Initialize model instances
     Leph::HumanoidFixedPressureModel model(type);

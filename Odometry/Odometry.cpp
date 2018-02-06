@@ -1,8 +1,14 @@
+#include <fstream>
 #include <stdexcept>
 #include <Utils/Angle.h>
+#include <Utils/FileEigen.h>
 #include "Odometry/Odometry.hpp"
 
+
 namespace Leph {
+Odometry::Odometry()
+  : Odometry(OdometryDisplacementModel::Type::DisplacementIdentity)
+{}
         
 Odometry::Odometry(
     OdometryDisplacementModel::Type typeDisplacement,
@@ -82,6 +88,24 @@ double Odometry::setParameters(
     }
     return error;
 }
+
+std::vector<std::string> Odometry::getParametersNames() const
+{
+  std::vector<std::string> displacementNames, noiseNames, result;
+  displacementNames = _modelDisplacement.getParametersNames();
+  noiseNames = _modelNoise.getParametersNames();
+  std::cout << "Nb displacements params: " << displacementNames.size() << std::endl;
+  std::cout << "Nb noise params: " << noiseNames.size() << std::endl;
+  // Adding displacement names (with prefix)
+  for (const std::string & name : displacementNames) {
+    result.push_back("displacement_" + name);
+  }
+  // Adding noise names (with prefix)
+  for (const std::string & name : noiseNames) {
+    result.push_back("noise_" + name);
+  }
+  return result;
+}
         
 Eigen::VectorXd Odometry::getNormalization() const
 {
@@ -147,10 +171,7 @@ void Odometry::update(
     diff = _modelDisplacement.displacementCorrection(diff);
 
     //Update corrected odometry at support swap
-    if (
-        lastSupport == Leph::HumanoidFixedModel::RightSupportFoot &&
-        _support == Leph::HumanoidFixedModel::LeftSupportFoot
-    ) {
+    if (lastSupport != _support) {
         //Apply noise generation if available
         if (engine != nullptr) {
             diff += _modelNoise.noiseGeneration(diff, *engine);
@@ -190,13 +211,7 @@ void Odometry::updateFullStep(
     }
 
     //Apply displacement correction
-    Eigen::Vector3d diff = _modelDisplacement
-        .displacementCorrection(deltaPose);
-    //Apply noise generation if available
-    if (engine != nullptr) {
-        diff += _modelNoise
-            .noiseGeneration(diff, *engine);
-    }
+    Eigen::Vector3d diff = getDiffFullStep(deltaPose, engine);
     //Save applied delta
     _lastDiff = deltaPose;
     
@@ -205,6 +220,19 @@ void Odometry::updateFullStep(
     _last = _state;
     odometryInt(diff, _state);
     _corrected = _state;
+}
+
+Eigen::Vector3d Odometry::getDiffFullStep(
+  const Eigen::Vector3d & deltaPose,
+  std::default_random_engine * engine) const
+{
+  //Apply displacement correction
+  Eigen::Vector3d diff = _modelDisplacement.displacementCorrection(deltaPose);
+  //Apply noise generation if available
+  if (engine != nullptr) {
+    diff += _modelNoise.noiseGeneration(diff, *engine);
+  }
+  return diff;
 }
 
 const Eigen::Vector3d& Odometry::state() const
@@ -240,6 +268,51 @@ void Odometry::odometryInt(
     state.z() += diff.z();
     //Shrink to -PI,PI
     state.z() = AngleBound(state.z());
+}
+
+void Odometry::saveToFile(const std::string & path) const
+{
+    std::ofstream file(path);
+    if (!file.is_open()) {
+        throw std::runtime_error("Unable to open file: " + path);
+    }
+    file << (int)getDisplacementType() << " " 
+         << (int)getNoiseType() << std::endl;
+    Leph::WriteEigenVectorToStream(file, getParameters());
+    file.close();
+}
+
+void Odometry::loadFromFile(const std::string & path)
+{
+    //Open file
+    std::ifstream file(path);
+    if (!file.is_open()) {
+        throw std::runtime_error("Unable to open file: " + path);
+    }
+    //Read data
+    int tmpTypeDisplacement;
+    int tmpTypeNoise;
+    file >> tmpTypeDisplacement;
+    file >> tmpTypeNoise;
+    OdometryDisplacementModel::Type typeDisplacement = 
+        (OdometryDisplacementModel::Type)tmpTypeDisplacement;
+    OdometryNoiseModel::Type typeNoise = 
+        (OdometryNoiseModel::Type)tmpTypeNoise;
+    Eigen::VectorXd initParams = ReadEigenVectorFromStream(file);
+    file.close();
+    //Check bounds
+    
+    _modelDisplacement = OdometryDisplacementModel(typeDisplacement);
+    _modelNoise = OdometryNoiseModel(typeNoise);
+    reset();
+    
+    double isError = setParameters(initParams);
+    if (isError > 0.0) {
+        std::ostringstream oss;
+        oss << "Odometry parameters are out of bounds: " 
+            << isError << std::endl;
+        throw std::runtime_error(oss.str());
+    }
 }
 
 }

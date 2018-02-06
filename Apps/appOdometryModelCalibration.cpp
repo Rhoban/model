@@ -6,6 +6,7 @@
 #include <random>
 #include <chrono>
 #include <Eigen/Dense>
+#include <Eigen/StdVector>
 #include <stdexcept>
 #include <libcmaes/cmaes.h>
 #include "Plot/Plot.hpp"
@@ -63,7 +64,7 @@ struct OdometryData {
     std::vector<std::vector<Leph::HumanoidFixedModel::SupportFoot>> goalTrajsSupport;
     //Walk step,lateral,turn and phase walk order at each 
     //logged point for each log sequences
-    std::vector<std::vector<Eigen::Vector4d>> walkTrajsOrder;
+    std::vector<std::vector<Eigen::Vector4d,Eigen::aligned_allocator<Eigen::Vector4d>>> walkTrajsOrder;
     std::vector<std::vector<double>> walkTrajsPhase;
     //Target measured cartesian displacement 
     //for each log sequences
@@ -127,7 +128,7 @@ void loadDataFromFile(OdometryData& data, const std::string& filename)
             data.readTrajsSupport.push_back(std::vector<Leph::HumanoidFixedModel::SupportFoot>());
             data.goalTrajsPose.push_back(std::vector<Eigen::Vector3d>());
             data.goalTrajsSupport.push_back(std::vector<Leph::HumanoidFixedModel::SupportFoot>());
-            data.walkTrajsOrder.push_back(std::vector<Eigen::Vector4d>());
+            data.walkTrajsOrder.push_back(std::vector<Eigen::Vector4d, Eigen::aligned_allocator<Eigen::Vector4d>>());
             data.walkTrajsPhase.push_back(std::vector<double>());
             data.targetDisplacements.push_back(Eigen::Vector3d(targetX, targetY, targetA));
         }

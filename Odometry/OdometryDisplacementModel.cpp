@@ -214,6 +214,31 @@ double OdometryDisplacementModel::setParameters(
     //Return distance for fitness scoring
     return error;
 }
+
+std::vector<std::string> OdometryDisplacementModel::getParametersNames() const
+{
+    if (_type == DisplacementIdentity) {
+      return {};
+    } else if (_type == DisplacementProportionalXY) {
+      return {"dx_from_dx","dy_from_dy"};
+    } else if (_type == DisplacementProportionalXYA) {
+      return {"dx_from_dx","dy_from_dy","dz_from_z"};
+    } else if (_type == DisplacementLinearSimpleXY) {
+      return {"dx_bias","dx_from_dx","dy_bias","dy_from_dy"};
+    } else if (_type == DisplacementLinearSimpleXYA) {
+      return {"dx_bias","dx_from_dx","dy_bias","dy_from_dy", "dz_bias", "dz_from_dz"};
+    } else if (_type == DisplacementLinearFullXY) {
+      return {"dx_bias","dx_from_dx","dx_from_dy","dx_from_dz",
+          "dy_bias","dy_from_dx","dy_from_dy","dy_from_dz"};
+    } else if (_type == DisplacementLinearFullXYA) {
+      return {"dx_bias","dx_from_dx","dx_from_dy","dx_from_dz",
+          "dy_bias","dy_from_dx","dy_from_dy","dy_from_dz",
+          "dz_bias","dz_from_dx","dz_from_dy","dz_from_dz"};
+    } else {
+        throw std::logic_error(
+            "OdometryDisplacementModel invalid type");
+    }
+}
         
 const Eigen::VectorXd& OdometryDisplacementModel::getNormalization() const
 {

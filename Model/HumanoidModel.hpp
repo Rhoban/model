@@ -4,6 +4,8 @@
 #include "Model/Model.hpp"
 #include "LegIK/LegIK.hpp"
 
+#include <Eigen/StdVector>
+
 namespace Leph {
 
 /**
@@ -13,6 +15,7 @@ namespace Leph {
  */
 enum RobotType {
     SigmabanModel,
+    SigmabanPlusModel,
     GrosbanModel,
 };
 
@@ -166,7 +169,7 @@ class HumanoidModel : public Model
          */
         bool cameraViewVectorToWorld(
             const Eigen::Vector3d& viewVector,
-            Eigen::Vector3d& pos);
+            Eigen::Vector3d& pos, double groundHeight = 0.0);
 
         /**
          * Compute cartesian position in world
@@ -185,7 +188,7 @@ class HumanoidModel : public Model
             double radius,
             Eigen::Vector3d& ballCenter,
             Eigen::Vector2d* ballCenterPixel = nullptr,
-            std::vector<Eigen::Vector2d>* bordersPixel = nullptr,
+            std::vector<Eigen::Vector2d, Eigen::aligned_allocator<Eigen::Vector2d>>* bordersPixel = nullptr,
             std::vector<Eigen::Vector3d>* borders = nullptr);
 
         /**

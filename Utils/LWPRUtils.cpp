@@ -179,8 +179,8 @@ void LWPRPrint(const LWPR_Object& model)
     //Compute and print receptive field information
     size_t countRFTrustworthy = 0;
     size_t sumRFReg = 0;
-    size_t minRFReg;
-    size_t maxRFReg;
+    size_t minRFReg = 0;
+    size_t maxRFReg = 0;
     Eigen::VectorXd sumRFVIP(model.nIn());
     sumRFVIP.setZero();
     Eigen::VectorXd minRFVIP(model.nIn());

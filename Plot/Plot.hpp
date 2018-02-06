@@ -375,7 +375,11 @@ class Plot
                 if (_pipeFd <= 0) {
                     throw std::logic_error("Plot closed pipe fd");
                 }
-                write(_pipeFd, commands.c_str(), commands.length());
+                int written = write(_pipeFd, commands.c_str(), commands.length());
+                if (written != (int)commands.length()) {
+                    std::cerr << "Plot failed to write in pipe: " 
+                        << std::to_string(written) << std::endl;
+                }
                 if (waitExit) {
                     waitCloseGnuplotInstance();
                 }

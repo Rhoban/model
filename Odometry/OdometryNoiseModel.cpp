@@ -6,11 +6,11 @@
 //on standart deviation
 constexpr double IdentityBound = 1.0;
 constexpr double ConstantDistanceBound = 0.1;
-constexpr double ConstantAngularBound = M_PI/2.0;
+constexpr double ConstantAngularBound = 5 * M_PI/180.0;
 constexpr double MixedBound = 1.0;
 constexpr double DefaultIdentityBound = 0.01;
-constexpr double DefaultConstantDistanceBound = 0.001;
-constexpr double DefaultConstantAngularBound = 1.0*M_PI/180.0;
+constexpr double DefaultConstantDistanceBound = 0.01;
+constexpr double DefaultConstantAngularBound = 1*M_PI/180.0;
 
 namespace Leph {
 
@@ -134,6 +134,26 @@ double OdometryNoiseModel::setParameters(
 
     //Return distance for fitness scoring
     return error;
+}
+
+std::vector<std::string> OdometryNoiseModel::getParametersNames() const
+{
+    if (_type == NoiseDisable) {
+      return {};
+    } else if (_type == NoiseConstant) {
+      return {"dx_bias","dy_bias","dz_bias"};
+    } else if (_type == NoiseProportional) {
+      return {"dx_from_dx","dy_from_dy","dz_from_z"};
+    } else if (_type == NoiseLinearSimple) {
+      return {"dx_bias","dx_from_dx","dy_bias","dy_from_dy", "dz_bias", "dz_from_dz"};
+    } else if (_type == NoiseLinearFull) {
+      return {"dx_bias","dx_from_dx","dx_from_dy","dx_from_dz",
+          "dy_bias","dy_from_dx","dy_from_dy","dy_from_dz",
+          "dz_bias","dz_from_dx","dz_from_dy","dz_from_dz"};
+    } else {
+        throw std::logic_error(
+            "OdometryDisplacementModel invalid type");
+    }
 }
         
 const Eigen::VectorXd& OdometryNoiseModel::getNormalization() const

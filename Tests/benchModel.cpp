@@ -119,7 +119,8 @@ void test(bool autoUpdate)
         for (size_t i=0;i<count;i++) {
             Eigen::Vector3d p9;
             Eigen::Vector2d v10;
-            std::vector<Eigen::Vector2d> c1;
+            std::vector<Eigen::Vector2d,
+                        Eigen::aligned_allocator<Eigen::Vector2d>> c1;
             std::vector<Eigen::Vector3d> c2;
             model.get().cameraViewVectorToBallWorld(camParams, Eigen::Vector3d(0.4, 0.0, -0.4), 0.07, p9, &v10, &c1, &c2);
         }

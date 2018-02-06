@@ -433,10 +433,10 @@ int InverseKinematics::operator()(const Eigen::VectorXd& dofs,
             _model->_model, _allDofs, 
             target.second.bodyId, Eigen::Vector3d(0.0, 1.0, 0.0), false);
         //Compute target two points to force orientation
-        Eigen::Vector3d targetPtX = target.second.target 
-            * (realPt + Eigen::Vector3d(1.0, 0.0, 0.0));
-        Eigen::Vector3d targetPtY = target.second.target 
-            * (realPt + Eigen::Vector3d(0.0, 1.0, 0.0));
+        Eigen::Vector3d targetPtX = 
+            (realPt + target.second.target*Eigen::Vector3d(1.0, 0.0, 0.0));
+        Eigen::Vector3d targetPtY = 
+            (realPt + target.second.target*Eigen::Vector3d(0.0, 1.0, 0.0));
         //Compute error
         fvec.segment(index, 3) = realPtX - targetPtX;
         index += 3;

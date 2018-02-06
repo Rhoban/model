@@ -4,18 +4,30 @@
 ###
 
 cmake_minimum_required(VERSION 2.8)
-project(Thesis)
+project(model)
 
-#Deps dependencies
-find_package(Deps)
-deps_add_libraries()
+find_package(catkin REQUIRED COMPONENTS
+  eigen
+  lwpr
+  libgp
+  libcmaes
+  rbdl_urdfreader
+  )
+
+find_package(RhIOServer)
+find_package(RhIOClient)
+find_package(RhAL)
+
+catkin_package(
+  INCLUDE_DIRS .
+  LIBRARIES model
+  CATKIN_DEPENDS eigen lwpr libgp libcmaes rbdl_urdfreader
+)
 
 #Option for compiling the tests and apps
 option(BUILD_LEPH_CODE_TESTS "Build Leph Code Tests" OFF)
 option(BUILD_LEPH_CODE_APPS "Build Leph Code Apps" OFF)
 option(BUILD_LEPH_CODE_VIEWER "Build Leph Code Viewer (SFML)" OFF)
-option(BUILD_LEPH_CODE_RHIO "Build Leph Code with RhIO" OFF)
-option(BUILD_LEPH_CODE_RHAL "Build Leph Code with RhAL" OFF)
 
 #Includes directories lists
 set(LEPHCODE_INCLUDE_DIRECTORIES "")
@@ -29,10 +41,21 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fopenmp" )
 #Include SFML (graphic library)
 set(SFML_DIRECTORY "SFML" CACHE STRING "SFML lib directory")
 
-#Include RhAL (Rhoban Abstraction Layer Library) if needed
-if (BUILD_LEPH_CODE_RHAL)
+#Include RhAL (Rhoban Abstraction Layer Library) if found
+if (RhAL_FOUND)
     add_definitions(-DBUILD_RHAL_RHIO_BINDING)
-endif (BUILD_LEPH_CODE_RHAL)
+    include_directories(${RhAL_INCLUDE_DIRS})
+endif (RhAL_FOUND)
+
+#Include RhIOClient (Rhoban Input Output Library) if found
+if (RhIOClient_FOUND)
+    include_directories(${RhIOClient_INCLUDE_DIRS})
+endif (RhIOClient_FOUND)
+
+#Include RhIOServer (Rhoban Input Output Library) if found
+if (RhIOServer_FOUND)
+    include_directories(${RhIOServer_INCLUDE_DIRS})
+endif (RhIOServer_FOUND)
 
 #Enable C++11
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
@@ -90,6 +113,7 @@ set(SOURCES_FILES
     Odometry/Odometry.cpp
     Odometry/OdometryDisplacementModel.cpp
     Odometry/OdometryNoiseModel.cpp
+    Odometry/OdometrySequence.cpp
     StaticWalk/StaticWalk.cpp
     Spline/Polynom.cpp
     Spline/Spline.cpp
@@ -187,26 +211,34 @@ set(APPS_FILES
     #appHumanoidSimulationLearning
     appCameraModelLearning
     appOdometryModelLearning
+    appOdometryModelLearning2
+    appOdometrySimulator
+    appOdometryPreparePredictiveModelData
+    appOdometryLogsTK
 )
 
 #Build App RhIO Viewer 
-if (BUILD_LEPH_CODE_RHIO)
-    deps_add_library("rhoban/rhio:client")
-    deps_add_library("rhobandeps/libzmq")
-    set(APPS_FILES ${APPS_FILES}
-        appRhIOViewerModel
-        appRhIOViewerRobocup
-    )
-endif (BUILD_LEPH_CODE_RHIO)
+if (BUILD_LEPH_CODE_VIEWER)
+    if (RhIOClient_FOUND)
+        set(APPS_FILES ${APPS_FILES}
+            appRhIOViewerModel
+            appRhIOViewerRobocup
+        )
+    endif (RhIOClient_FOUND)
+endif (BUILD_LEPH_CODE_VIEWER)
 
 #LephCode linked libraries
 set(CODE_LIBRARIES
     ncurses
-    console_bridge 
-    urdfdom_world 
-    urdfdom_model
-    ${DEPS_LIBRARIES}
+    ${catkin_LIBRARIES}
 )
+
+if (RhIOClient_FOUND)
+  set(CODE_LIBRARIES
+    ${CODE_LIBRARIES}
+    ${RhIOClient_LIBRARIES}
+    )
+endif(RhIOClient_FOUND)
 
 #Add URDF model symbolic link
 execute_process(COMMAND "/bin/bash" "-c" 
@@ -277,17 +309,17 @@ endif (BUILD_LEPH_CODE_VIEWER)
 
 #Include need directories
 set(LEPHCODE_INCLUDE_DIRECTORIES ${LEPHCODE_INCLUDE_DIRECTORIES} CACHE STRING "LephCode include directories")
-include_directories(${LEPHCODE_INCLUDE_DIRECTORIES})
+include_directories(${LEPHCODE_INCLUDE_DIRECTORIES} ${catkin_INCLUDE_DIRS})
 
 #Build Code as shared library
-add_library(LephCode SHARED ${SOURCES_FILES})
-target_link_libraries(LephCode ${CODE_LIBRARIES})
+add_library(model SHARED ${SOURCES_FILES})
+target_link_libraries(model ${CODE_LIBRARIES})
 
 #Build Tests
 if (BUILD_LEPH_CODE_TESTS)
     foreach (TEST ${TESTS_FILES})
         add_executable(${TEST} Tests/${TEST}.cpp)
-        target_link_libraries(${TEST} LephCode)
+        target_link_libraries(${TEST} model)
     endforeach ()
 endif (BUILD_LEPH_CODE_TESTS)
 
@@ -295,14 +327,13 @@ endif (BUILD_LEPH_CODE_TESTS)
 if (BUILD_LEPH_CODE_APPS)
     foreach (APP ${APPS_FILES})
         add_executable(${APP} Apps/${APP}.cpp)
-        target_link_libraries(${APP} LephCode)
+        target_link_libraries(${APP} model)
     endforeach ()
 endif (BUILD_LEPH_CODE_APPS)
 
 #Build App RhAL Motion 
-if (BUILD_LEPH_CODE_RHAL)
-    deps_add_library_custom("rhoban/rhio:server" "APPS_RHAL_LIBRARIES")
-    deps_add_library_custom("rhoban/rhal" "APPS_RHAL_LIBRARIES")
+if (RhAL_FOUND)
+    set(APPS_RHAL_LIBRARIES ${RhAL_LIBRARIES} ${RhIO_SERVER_LIBRARIES})
     set(APPS_RHAL_SOURCES_FILES
         RhAL/RhALUtils
     )
@@ -311,7 +342,7 @@ if (BUILD_LEPH_CODE_RHAL)
     )
     foreach (APP ${APPS_RHAL_FILES})
         add_executable(${APP} Apps/${APP}.cpp ${APPS_RHAL_SOURCES_FILES})
-        target_link_libraries(${APP} LephCode ${APPS_RHAL_LIBRARIES})
+        target_link_libraries(${APP} model ${APPS_RHAL_LIBRARIES})
     endforeach ()
-endif (BUILD_LEPH_CODE_RHAL)
+endif (RhAL_FOUND)
 

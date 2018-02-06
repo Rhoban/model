@@ -89,6 +89,7 @@ class LogLikelihoodMaximization
             _boundFunc(),
             _initFunc(),
             _transformFunc(),
+            _cyclicObservationDims(),
             _samplingNumber(2),
             _indexesLearning(),
             _indexesTesting()
@@ -137,6 +138,14 @@ class LogLikelihoodMaximization
         }
 
         /**
+         * Assign the cyclic dimensions for observations
+         */
+        void setCyclicObsDims(const Eigen::VectorXi & cyclicDims)
+        {
+            _cyclicObservationDims = cyclicDims;          
+        }
+
+        /**
          * Add an observation vector and
          * associated custom data
          */
@@ -157,13 +166,38 @@ class LogLikelihoodMaximization
             _dataContainer.push_back(data);
         }
 
+        void runOptimization(
+            unsigned int samplingNumber,
+            double learningDataRatio,
+            unsigned int maxIterations,
+            unsigned int restart,
+            unsigned int populationSize = 10,
+            double sigma = -1.0,
+            unsigned int elitismLevel = 0,
+            Leph::Plot* plot = nullptr)
+        {
+            //Check ratio
+            if (learningDataRatio <= 0.0 || learningDataRatio >= 1.0) {
+                throw std::logic_error(
+                    "LogLikelihoodMaximization invalid learning ratio");
+            }
+
+            //Shuffle learning and testing set
+            unsigned int learningSize = 
+                std::floor(learningDataRatio*_observations.size());
+            runOptimization(samplingNumber, learningSize,
+                            maxIterations, restart, populationSize,
+                            sigma, elitismLevel, plot);
+        }
+
+
         /**
          * Start and run CMA-ES parameters
          * optimization with given configuration
          */
         void runOptimization(
             unsigned int samplingNumber,
-            double learningDataRatio,
+            unsigned int learningSize,
             unsigned int maxIterations,
             unsigned int restart,
             unsigned int populationSize = 10,
@@ -176,22 +210,38 @@ class LogLikelihoodMaximization
                 throw std::logic_error(
                     "LogLikelihoodMaximization not enough observations");
             }
-            //Check ratio
-            if (learningDataRatio <= 0.0 || learningDataRatio >= 1.0) {
+            if (learningSize <= 0) {
                 throw std::logic_error(
-                    "LogLikelihoodMaximization invalid learning ratio");
+                    "LogLikelihoodMaximization invalid learning size: "
+                    + std::to_string(learningSize));
             }
+            unsigned int validationSize = _observations.size() - learningSize;
+            if (validationSize < 2) {
+              throw std::logic_error(
+                "RunOptimization require at least 2 validation observations");
+            }
+            std::vector<size_t> learningIndices, testIndices;
+            dataDispatch(learningSize, _observations.size(),
+                         learningIndices, testIndices);
+            runOptimization(samplingNumber, learningIndices, testIndices,
+                            maxIterations, restart, populationSize,
+                            sigma, elitismLevel, plot);
+        }
 
-            //Shuffle learning and testing set
-            unsigned int learningSize = 
-                std::floor(learningDataRatio*_observations.size());
-            if (learningSize <= 2) {
-                learningSize = 2;
-            }
-            while (_observations.size() - learningSize < 2) {
-                learningSize--;
-            }
-            dataDispatch(learningSize); 
+        void runOptimization(
+            unsigned int samplingNumber,
+            const std::vector<size_t> & learningIndices,
+            const std::vector<size_t> & testIndices,
+            unsigned int maxIterations,
+            unsigned int restart,
+            unsigned int populationSize = 10,
+            double sigma = -1.0,
+            unsigned int elitismLevel = 0,
+            Leph::Plot* plot = nullptr)
+        {
+            // Assign test and learn sets
+            _indexesLearning = learningIndices;
+            _indexesTesting = testIndices;
             
             //Assign sampling number
             _samplingNumber = samplingNumber;
@@ -366,6 +416,12 @@ class LogLikelihoodMaximization
             double& meanTest, double& varTest,
             double& minTest, double& maxTest) const
         {
+            // If the parameters are out of bound, it is forbidden to test
+            if (_boundFunc(params) > 0) {
+              //TODO: set all values to nan?
+              return;
+            }
+
             //Random device initialization
             std::random_device rd;
             std::default_random_engine engine(rd());
@@ -451,6 +507,46 @@ class LogLikelihoodMaximization
                 - pow(meanTest, 2);
         }
 
+        /**
+         * Score given parameters using 
+         * the user observations.
+         * If useTestData is true, the testing set
+         * is used instead of learning set.
+         */
+        double scoreFitness(
+            const Eigen::VectorXd& params, bool useTestData) const
+        {
+            const std::vector<size_t>& usedSet = 
+                useTestData ? _indexesTesting : _indexesLearning;
+
+            //Check parameters
+            double costBound = _boundFunc(params);
+            if (costBound > 0) {
+                return costBound;
+            }
+            
+            //Random device initialization
+            std::random_device rd;
+            std::default_random_engine engine(rd());
+            
+            //Model initialization
+            TypeModel model = _initFunc(params);
+    
+            //Iterate over all observations
+            double logLikelihood = 0.0;
+            for (size_t i=0;i<usedSet.size();i++) {
+                size_t indexSet = usedSet[i];
+                double tmpScore = scoreParametersLogLikelihood(
+                    params, _observations[indexSet], 
+                    _dataContainer[indexSet], model, engine);
+                logLikelihood += tmpScore;
+            }
+
+            //Return normalized inversed score
+            //(minimization)
+            return -logLikelihood/(double)usedSet.size();
+        }
+
     private:
 
         /**
@@ -487,6 +583,12 @@ class LogLikelihoodMaximization
          * observation and estimation
          */
         TransformFunc _transformFunc;
+
+        /**
+         * Cyclicity of observations
+         * val[i] != 0 -> dim 'i' is cyclic
+         */
+        Eigen::VectorXi _cyclicObservationDims;
 
         /**
          * The number of time the user function
@@ -534,66 +636,25 @@ class LogLikelihoodMaximization
             
             //Estimate the gaussian distribution
             Leph::GaussianDistribution dist;
-            dist.fit(estimations);
+            dist.fit(estimations, _cyclicObservationDims);
 
             //Compute the log likelihood
             return dist.logProbability(obs);
         }
 
         /**
-         * Score given parameters using 
-         * the user observations.
-         * If useTestData is true, the testing set
-         * is used instead of learning set.
+         * Randomly separate set {0, 1, ..., nbObservations-1} in two sets
+         * The learning set of size 'learningSize'
+         * the testing set of size 'nbObservations - learningSize'
+         * Resulting indices are placed in the provided vectors
          */
-        double scoreFitness(
-            const Eigen::VectorXd& params, bool useTestData) const
+        void dataDispatch(size_t learningSize,
+                          size_t nbObservations,
+                          std::vector<size_t> & learningIndexes,
+                          std::vector<size_t> & testingIndexes)
         {
-            const std::vector<size_t>& usedSet = 
-                useTestData ? _indexesTesting : _indexesLearning;
-            //Check size
-            if (usedSet.size() < 2) {
-                throw std::logic_error(
-                    "LogLikelihoodMaximization not enough points: "
-                    + std::to_string(usedSet.size()));
-            }
-
-            //Check parameters
-            double costBound = _boundFunc(params);
-            if (costBound > 0) {
-                return costBound;
-            }
-            
-            //Random device initialization
-            std::random_device rd;
-            std::default_random_engine engine(rd());
-            
-            //Model initialization
-            TypeModel model = _initFunc(params);
-    
-            //Iterate over all observations
-            double logLikelihood = 0.0;
-            for (size_t i=0;i<usedSet.size();i++) {
-                size_t indexSet = usedSet[i];
-                double tmpScore = scoreParametersLogLikelihood(
-                    params, _observations[indexSet], 
-                    _dataContainer[indexSet], model, engine);
-                logLikelihood += tmpScore;
-            }
-
-            //Return normalized inversed score
-            //(minimization)
-            return -logLikelihood/(double)usedSet.size();
-        }
-
-        /**
-         * Dispatch and shuffle input observations 
-         * data into learning and testing set
-         */
-        void dataDispatch(size_t learningSize)
-        {
-            _indexesLearning.clear();
-            _indexesTesting.clear();
+            learningIndexes.clear();
+            testingIndexes.clear();
             if (learningSize > _observations.size()-1) {
                 throw std::logic_error(
                     "LogLikelihoodMaximization invalid learning size");
@@ -603,17 +664,17 @@ class LogLikelihoodMaximization
             std::default_random_engine engine(rd());
             //Create the vector of sorted indexes
             std::vector<size_t> tmpIndexes;
-            for (size_t i=0;i<_observations.size();i++) {
+            for (size_t i=0;i<nbObservations;i++) {
                 tmpIndexes.push_back(i);
             }
             //Shuffle the vector
             std::shuffle(tmpIndexes.begin(), tmpIndexes.end(), engine);
             //Split under learning and testing set
             for (size_t i=0;i<learningSize;i++) {
-                _indexesLearning.push_back(tmpIndexes[i]);
+                learningIndexes.push_back(tmpIndexes[i]);
             }
-            for (size_t i=learningSize;i<_observations.size();i++) {
-                _indexesTesting.push_back(tmpIndexes[i]);
+            for (size_t i=learningSize;i<nbObservations;i++) {
+                testingIndexes.push_back(tmpIndexes[i]);
             }
         }
 };

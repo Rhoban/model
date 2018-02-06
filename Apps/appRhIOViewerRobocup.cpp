@@ -18,7 +18,7 @@
 void usage()
 {
     std::cout 
-        << "Usage: ./app robothost [goal|read|corrected] [sigmaban|grosban]" 
+        << "Usage: ./app robothost [goal|read|corrected] [sigmaban|sigmaban_plus|grosban]" 
         << std::endl;
     exit(1);
 }
@@ -41,6 +41,8 @@ int main(int argc, char** argv)
     Leph::RobotType type = Leph::SigmabanModel;
     if (std::string(argv[3]) == "sigmaban") {
         type = Leph::SigmabanModel;
+    } else if (std::string(argv[3]) == "sigmaban_plus") {
+        type = Leph::SigmabanPlusModel;
     } else if (std::string(argv[3]) == "grosban") {
         type = Leph::GrosbanModel;
     } else {
@@ -52,10 +54,13 @@ int main(int argc, char** argv)
     std::cout << "Connecting to RhIO " << host << " " << mode << " with ";
     std::cout << (type == Leph::SigmabanModel ? "Sigmaban" : "Grosban") 
         << " model" << std::endl;
-    RhIO::ClientSub clientSub(
-        std::string("tcp://" + host + ":") + RhIO::ServerPubPort);
-    RhIO::ClientReq clientReq(
-        std::string("tcp://" + host + ":") + RhIO::ServerRepPort);
+    
+    std::stringstream ss;
+    ss << "tcp://" << host << ":" << (RhIO::ServersPortBase);
+    RhIO::ClientSub clientSub(ss.str());
+    ss.str("");
+    ss << "tcp://" << host << ":" << (RhIO::ServersPortBase+1);
+    RhIO::ClientReq clientReq(ss.str());
     
     //Initialize model instances
     Leph::HumanoidFixedModel model(type);
@@ -127,7 +132,7 @@ int main(int argc, char** argv)
         std::lock_guard<std::mutex> lock(mutexVar);
         ballQuality = val;
     };
-    streamedValues["localisation/goalQ"] = [&mutexVar, &fieldQuality](double val) {
+    streamedValues["localisation/fieldQ"] = [&mutexVar, &fieldQuality](double val) {
         std::lock_guard<std::mutex> lock(mutexVar);
         fieldQuality = val;
     };

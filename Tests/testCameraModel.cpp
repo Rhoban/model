@@ -96,7 +96,8 @@ int main()
         std::cout << "============= Ball" << std::endl;
         Eigen::Vector3d ballCenter;
         Eigen::Vector2d ballCenterPixel;
-        std::vector<Eigen::Vector2d> bordersPixel;
+        std::vector<Eigen::Vector2d, 
+                    Eigen::aligned_allocator<Eigen::Vector2d>> bordersPixel;
         std::vector<Eigen::Vector3d> borders;
         model.get().cameraViewVectorToBallWorld(camParams, 
             model.get().cameraPixelToViewVector(camParams, Eigen::Vector2d(0.0, 0.5)), 
