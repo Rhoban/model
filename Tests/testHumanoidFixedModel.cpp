@@ -22,10 +22,11 @@ int main()
     params("dynamic:turn") = 30.0;
     
     double t = 0.0;
+    double dt = std::pow(10,-2);
     while (viewer.update()) {
-        t += 0.01;
+        t += dt;
         //CartWalk generator
-        walk.exec(0.01, params);
+        walk.exec(dt, params);
         //Adapt CartWalk convention to Model convention
         Leph::VectorLabel output = walk.lastOutputs()
             .rename("output", "");

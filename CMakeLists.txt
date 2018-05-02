@@ -6,12 +6,25 @@
 cmake_minimum_required(VERSION 2.8)
 project(model)
 
-find_package(catkin REQUIRED COMPONENTS
+#Option for compiling the tests and apps
+option(BUILD_LEPH_CODE_TESTS "Build Leph Code Tests" OFF)
+option(BUILD_LEPH_CODE_APPS "Build Leph Code Apps" OFF)
+option(BUILD_LEPH_CODE_VIEWER "Build Leph Code Viewer (SFML)" OFF)
+
+set(CATKIN_DEPENDENCIES
   eigen
   lwpr
   libgp
   libcmaes
   rbdl_urdfreader
+  )
+
+if (BUILD_LEPH_CODE_VIEWER)
+  set(CATKIN_DEPENDENCIES ${CATKIN_DEPENDENCIES} "sfml")
+endif()
+
+find_package(catkin REQUIRED COMPONENTS
+  ${CATKIN_DEPENDENCIES}
   )
 
 find_package(RhIOServer)
@@ -24,11 +37,6 @@ catkin_package(
   CATKIN_DEPENDS eigen lwpr libgp libcmaes rbdl_urdfreader
 )
 
-#Option for compiling the tests and apps
-option(BUILD_LEPH_CODE_TESTS "Build Leph Code Tests" OFF)
-option(BUILD_LEPH_CODE_APPS "Build Leph Code Apps" OFF)
-option(BUILD_LEPH_CODE_VIEWER "Build Leph Code Viewer (SFML)" OFF)
-
 #Includes directories lists
 set(LEPHCODE_INCLUDE_DIRECTORIES "")
 
@@ -37,9 +45,6 @@ set(LEPHCODE_INCLUDE_DIRECTORIES ${LEPHCODE_INCLUDE_DIRECTORIES} ${CMAKE_CURRENT
 
 #OpenMP flags for LibCMAES
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fopenmp" )
-
-#Include SFML (graphic library)
-set(SFML_DIRECTORY "SFML" CACHE STRING "SFML lib directory")
 
 #Include RhAL (Rhoban Abstraction Layer Library) if found
 if (RhAL_FOUND)
@@ -254,8 +259,6 @@ execute_process(COMMAND "/bin/bash" "-c"
 #Viewer (SFML) build option and files
 if (BUILD_LEPH_CODE_VIEWER)
     add_definitions(-DLEPH_VIEWER_ENABLED)
-    set(LEPHCODE_INCLUDE_DIRECTORIES ${LEPHCODE_INCLUDE_DIRECTORIES} ${SFML_DIRECTORY}/include)
-    link_directories(${SFML_DIRECTORY}/lib)
     set(SOURCES_FILES ${SOURCES_FILES} 
         Viewer/ModelViewer.cpp
         Viewer/ModelDraw.cpp
@@ -297,13 +300,6 @@ if (BUILD_LEPH_CODE_VIEWER)
         appTrajectoriesKickGeneration
         appHumanoidSimulationPlayer
         appFeedForwardSimulation
-    )
-    set(CODE_LIBRARIES ${CODE_LIBRARIES} 
-        sfml-graphics
-        sfml-window
-        sfml-system
-        GL
-        GLU
     )
 endif (BUILD_LEPH_CODE_VIEWER)
 
