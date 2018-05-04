@@ -17,8 +17,9 @@ int main()
     Leph::Scheduling scheduling(100.0);
     Leph::Plot plot;
     double t = 0.0;
+    double dt = 0.001;
     while (viewer.update()) {
-        walk.update(0.01);
+        walk.update(dt);
         bool isSuccess = walk.assignModel(model); 
         if (!isSuccess) {
             std::cout << "IK Error" << std::endl;
@@ -53,7 +54,7 @@ int main()
         });
         //Waiting
         scheduling.wait();
-        t += 0.01;
+        t += dt;
         //Set orders
         if (t < 1.7) {
             walk.setOrders(Eigen::Vector3d(0.0, 0.0, 0.0), false);
