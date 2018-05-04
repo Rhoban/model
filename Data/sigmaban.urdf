@@ -105,7 +105,7 @@
     </inertial>
   </link>
   <joint name="right_foot_tip" type="fixed">
-    <origin xyz="0.01515 -0.0055 -0.05765" rpy="0 0 0"/>
+    <origin xyz="0 0 -0.05765" rpy="0 0 0"/>
     <parent link="right_ankle_roll" />
     <child link="right_foot_tip" />
     <axis xyz="0 0 0" />
@@ -265,7 +265,7 @@
     </inertial>
   </link>
   <joint name="left_foot_tip" type="fixed">
-    <origin xyz="0.01515 0.005 -0.05765" rpy="0 0 0"/>
+    <origin xyz="0 0 -0.05765" rpy="0 0 0"/>
     <parent link="left_ankle_roll" />
     <child link="left_foot_tip" />
     <axis xyz="0 0 0" />
