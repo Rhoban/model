@@ -5,7 +5,6 @@
 #include "Viewer/ModelViewer.hpp"
 #include "Viewer/ModelDraw.hpp"
 #include "Utils/Scheduling.hpp"
-#include "RhIO.hpp"
 #include "RhIOClient.hpp"
 #include "Model/NamesModel.h"
 
@@ -232,12 +231,12 @@ int main(int argc, char** argv)
             } else {
                 model.HumanoidFixedPressureModel::updateBase();
                 //Rebuilt extrinsic matrix
-                    Eigen::Matrix3d imuMatrix = 
-                        Eigen::AngleAxisd(yaw, Eigen::Vector3d::UnitZ()).toRotationMatrix()
-                        * Eigen::AngleAxisd(pitch, Eigen::Vector3d::UnitY()).toRotationMatrix()
-                        * Eigen::AngleAxisd(roll, Eigen::Vector3d::UnitX()).toRotationMatrix();
-                    model.setOrientation(
-                        imuMatrix);
+                Eigen::Matrix3d imuMatrix = 
+                    Eigen::AngleAxisd(yaw, Eigen::Vector3d::UnitZ()).toRotationMatrix()
+                    * Eigen::AngleAxisd(pitch, Eigen::Vector3d::UnitY()).toRotationMatrix()
+                    * Eigen::AngleAxisd(roll, Eigen::Vector3d::UnitX()).toRotationMatrix();
+                model.setOrientation(
+                    imuMatrix);
             }
             //Model viewer
             if (!isGoal) {

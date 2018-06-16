@@ -8,7 +8,6 @@
 #include "Viewer/ModelViewer.hpp"
 #include "Viewer/ModelDraw.hpp"
 #include "Utils/Scheduling.hpp"
-#include "RhIO.hpp"
 #include "RhIOClient.hpp"
 #include "Model/NamesModel.h"
 

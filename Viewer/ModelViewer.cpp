@@ -28,7 +28,7 @@ ModelViewer::ModelViewer(unsigned int width,
     _lastMousePosY(0)
 {
     //Load font file
-    if (!_font.loadFromFile("../Data/font.ttf")) {
+    if (!_font.loadFromFile("font.ttf")) {
         throw std::logic_error("ModelViewer fail to load font");
     }
 
