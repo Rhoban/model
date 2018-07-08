@@ -11,12 +11,18 @@ option(BUILD_LEPH_CODE_TESTS "Build Leph Code Tests" OFF)
 option(BUILD_LEPH_CODE_APPS "Build Leph Code Apps" OFF)
 option(BUILD_LEPH_CODE_VIEWER "Build Leph Code Viewer (SFML)" OFF)
 
+
+find_package(OpenCV 3 REQUIRED)
+include_directories(${OpenCV_DIR})
+link_directories(${OpenCV_DIR}/lib ${OpenCV_DIR}/3rdparty/lib)
+
 set(CATKIN_DEPENDENCIES
   eigen
   lwpr
   libgp
   libcmaes
   rbdl_urdfreader
+  rhoban_utils
   )
 
 if (BUILD_LEPH_CODE_VIEWER)
@@ -32,8 +38,8 @@ find_package(RhIOClient)
 find_package(RhAL)
 
 catkin_package(
-  INCLUDE_DIRS .
-  LIBRARIES model
+  INCLUDE_DIRS . ${OpenCV_DIR}
+  LIBRARIES model ${OpenCV_LIBS}
   CATKIN_DEPENDS eigen lwpr libgp libcmaes rbdl_urdfreader
 )
 
@@ -236,6 +242,7 @@ endif (BUILD_LEPH_CODE_VIEWER)
 set(CODE_LIBRARIES
     ncurses
     ${catkin_LIBRARIES}
+    ${OpenCV_LIBS}
 )
 
 if (RhIOClient_FOUND)
