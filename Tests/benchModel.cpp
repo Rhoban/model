@@ -8,7 +8,7 @@ void test(bool autoUpdate)
     
     //Initialize the Model
     Leph::HumanoidFixedModel model(Leph::SigmabanModel);
-    Leph::CameraParameters camParams = {80*M_PI/180.0, 50*M_PI/180.0};
+    Leph::CameraModel camParams;//TODO: should be initialized properly
 
     size_t count = 100;
     for (double t=0.0;t<1.0;t+=0.01) {
@@ -129,7 +129,7 @@ void test(bool autoUpdate)
         //Head IK
         c.start("look at");
         for (size_t i=0;i<count;i++) {
-            model.get().cameraLookAt(camParams, Eigen::Vector3d(1.0, 0.0, 0.0), 0.0);
+            model.get().cameraLookAt(Eigen::Vector3d(1.0, 0.0, 0.0));
         }
         c.stop("look at");
         c.stop("all");

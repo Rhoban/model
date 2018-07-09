@@ -11,7 +11,7 @@ int main()
     Leph::ModelViewer viewer(1200, 900);
 
     //Camera parameters in width and height
-    Leph::CameraParameters camParams = {80*M_PI/180.0, 50*M_PI/180.0};
+    Leph::CameraModel camParams;//TODO: should be initialized properly
 
     double t = 0.0;
     Leph::Plot plot;
@@ -31,11 +31,11 @@ int main()
         Eigen::Vector3d target = model.get().selfInFrame("origin", Eigen::Vector3d(0.5, 0.5, 0.0));
 
         //Height pixel in camera target
-        double pixelTarget = 0.5;
+        //NOTE: Using a pixelTarget different from 0 is not allowed anymore
+        double pixelTarget = 0.0;
 
         //Compute head Inverse Kinematics
-        bool isSucess = model.get().cameraLookAt(
-            camParams, target, pixelTarget);
+        bool isSucess = model.get().cameraLookAt(target);
         if (!isSucess) {
             std::cout << "!!! CAMERA IK LOOKAT ERROR" << std::endl;
             return 1;

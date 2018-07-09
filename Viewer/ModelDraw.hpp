@@ -25,7 +25,7 @@ void ModelDraw(
  * projected field of view with given ModelViewer
  */
 void CameraDraw(
-    const CameraParameters& params, 
+    const CameraModel& cameraModel, 
     HumanoidModel& model, 
     ModelViewer& viewer);
 

@@ -2,6 +2,7 @@
 #define LEPH_HUMANOIDMODEL_HPP
 
 #include "Model/Model.hpp"
+#include "Model/CameraModel.hpp"
 #include "LegIK/LegIK.hpp"
 
 #include <Eigen/StdVector>
@@ -19,15 +20,6 @@ enum RobotType {
     GrosbanModel,
 };
 
-/**
- * Camera pixel 2D coordinates to
- * 3D world coordinates parameters
- */
-struct CameraParameters {
-    //Width and height angular aperture in radians
-    double widthAperture;
-    double heightAperture;
-};
 
 /**
  * HumanoidModel
@@ -144,13 +136,13 @@ class HumanoidModel : public Model
             const Eigen::Vector3d& pos = Eigen::Vector3d::Zero());
         
         /**
-         * Convert given pixel in image space (-1,1)
+         * Convert given pixel in image space [0,width-1]*[0,height-1]
          * or given extrinsic Pan/Tilt euler angles
          * with respect to robot self frame to unnormalized
          * view vector in world frame.
          */
         Eigen::Vector3d cameraPixelToViewVector(
-            const CameraParameters& params,
+            const CameraModel& cameraModel,
             const Eigen::Vector2d& pixel);
         Eigen::Vector3d cameraPanTiltToViewVector(
             const Eigen::Vector2d& anglesPanTilt);
@@ -183,7 +175,7 @@ class HumanoidModel : public Model
          * the horizon and pos is shrink to the horizon line.
          */
         bool cameraViewVectorToBallWorld(
-            const CameraParameters& params,
+            const CameraModel& cameraModel,
             const Eigen::Vector3d& viewVector,
             double radius,
             Eigen::Vector3d& ballCenter,
@@ -208,77 +200,57 @@ class HumanoidModel : public Model
          * view vector is assigned.
          */
         Eigen::Vector2d cameraPixelToPanTilt(
-            const CameraParameters& params,
+            const CameraModel& cameraModel,
             const Eigen::Vector2d& pixel,
             Eigen::Vector3d* viewVector = nullptr);
 
         /**
-         * Compute normalize 2d pixel position in camera
-         * space projected from given point in world
-         * frame (origin). 
-         * Given Camera parameters are used.
-         * False is returned if projection fails (not 
-         * inversible) or if projected point comes 
-         * from camera's backside.
+         * Compute the image position in camera space projected from given point
+         * in world frame (origin).
+         * False is returned if:
+         * - Projected point comes from camera's backside (then pixel is set to (0,0))
+         * - Point is outside of image (then pixel is set to a value out of image limits)
          */
         bool cameraWorldToPixel(
-            const CameraParameters& params,
+            const CameraModel& cameraModel,
             const Eigen::Vector3d& pos,
             Eigen::Vector2d& pixel);
         
         /**
-         * Compute normalized 2d pixel position in
-         * camera space from given Pan/Tilt extrinsic
-         * angles of target view vector in robot self frame.
-         * False is returned if projection fails (not 
-         * inversible) or if projected point comes 
-         * from camera's backside.
+         * Compute 2d pixel position in camera space from given Pan/Tilt
+         * extrinsic angles of target view vector in robot self frame.
+         *
+         * False is returned if:
+         * - projected point comes from camera's backside.
+         * - projected point is outside of image sensor
          */
         bool cameraPanTiltToPixel(
-            const CameraParameters& params,
+            const CameraModel& cameraModel,
             const Eigen::Vector2d& anglesPanTilt,
             Eigen::Vector2d& pixel);
 
         /**
-         * Set head yaw and pitch degrees of
-         * freedom to look at given target position
-         * in world (origin) frame.
-         * If offsetPixelTilt is zero, the given
-         * worl point is set at the center of the
-         * camera view.
-         * If offsetPixelTilt is between -1 and 1 in
-         * pixel space, the given world point is 
-         * centered at the camera view in width 
-         * but is offset in height.
-         * Camera parameters is given as input.
-         * In NoUpdate version, the underlying model
-         * is not updated and given reference dof 
-         * are assigned.
-         * If the computation fails, the model
-         * is not updated and false is returned.
+         * Set head yaw and pitch degrees of freedom to center camera on the
+         * given target position in world (origin) frame. 
+         *
+         * In NoUpdate version, the underlying model is not updated and given
+         * reference dof are assigned.  If the computation fails, the model is
+         * not updated and false is returned.
          */
-        bool cameraLookAt(
-            const CameraParameters& params,
-            const Eigen::Vector3d& posTarget,
-            double offsetPixelTilt = 0.0);
+        bool cameraLookAt(const Eigen::Vector3d& posTarget);
         bool cameraLookAtNoUpdate(
             double& panDOF,
             double& tiltDOF,
-            const CameraParameters& params,
-            const Eigen::Vector3d& posTarget,
-            double offsetPixelTilt = 0.0);
+            const Eigen::Vector3d& posTarget);
 
         /**
-         * Compute and return the height in
-         * pixel normalized coordinate of the 
-         * horizon line at given width pixel
-         * normalized coordinate.
-         * params is used camera parameters.
-         * screenWidth is width (X) pixel 
-         * coordinate between -1 and 1.
+         * Compute and return the height in pixel normalized coordinate of the
+         * horizon line at given width pixel normalized coordinate.  params is
+         * used camera parameters.  screenWidth is width (X) pixel coordinate
+         * between -1 and 1.
          */
         double cameraScreenHorizon(
-            const CameraParameters& params,
+            const CameraModel& cameraModel,
             double screenPosWidth);
 
     private:

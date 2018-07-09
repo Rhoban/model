@@ -1,6 +1,8 @@
 #include "Model/RBDLRootUpdate.h"
 #include "Model/HumanoidModel.hpp"
 
+#include <rhoban_utils/util.h>
+
 namespace Leph {
 
 HumanoidModel::HumanoidModel(
@@ -345,34 +347,13 @@ Eigen::Vector3d HumanoidModel::frameInSelf(
 }
 
 Eigen::Vector3d HumanoidModel::cameraPixelToViewVector(
-    const CameraParameters& params,
+    const CameraModel& cameraModel,
     const Eigen::Vector2d& pixel)
 {
-    double focalLength = 0.01;
-    //Optical center
-    Eigen::Vector3d center = Model::position("camera", "origin");
-    //Camera orientation
-    Eigen::Matrix3d orientation = Model::orientation("camera", "origin");
-    orientation.transposeInPlace();
+  Eigen::Vector3d viewVectorInCamera;
+  viewVectorInCamera = cv2Eigen(cameraModel.getViewVectorFromImg(eigen2CV(pixel)));
 
-    //Half width and height aperture distance on focal plane
-    double widthLen = focalLength*tan(params.widthAperture/2.0);
-    double heightLen = focalLength*tan(params.heightAperture/2.0);
-    //Pixel width and height distance from optical center
-    double pixelWidthPos = pixel.x()*widthLen;
-    double pixelHeightPos = pixel.y()*heightLen;
-
-    //Pixel position in world frame
-    Eigen::Vector3d pixelPos =
-        center
-        + focalLength*orientation.col(0)
-        - pixelWidthPos*orientation.col(1)
-        - pixelHeightPos*orientation.col(2);
-
-    //Unnormalize forward pixel vector
-    Eigen::Vector3d forward = pixelPos - center;
-
-    return forward;
+  return Model::orientation("camera", "origin") * viewVectorInCamera;
 }
 Eigen::Vector3d HumanoidModel::cameraPanTiltToViewVector(
     const Eigen::Vector2d& anglesPanTilt)
@@ -425,7 +406,7 @@ bool HumanoidModel::cameraViewVectorToWorld(
 }
 
 bool HumanoidModel::cameraViewVectorToBallWorld(
-    const CameraParameters& params,
+    const CameraModel& cameraModel,
     const Eigen::Vector3d& viewVector,
     double radius,
     Eigen::Vector3d& ballCenter,
@@ -482,17 +463,17 @@ bool HumanoidModel::cameraViewVectorToBallWorld(
 
     //Compute in the previous position in pixel spaces
     if (ballCenterPixel != nullptr) {
-        cameraWorldToPixel(params, ballCenter, *ballCenterPixel);
+        cameraWorldToPixel(cameraModel, ballCenter, *ballCenterPixel);
     }
     if (bordersPixel != nullptr) {
         Eigen::Vector2d pix;
-        cameraWorldToPixel(params, border1, pix);
+        cameraWorldToPixel(cameraModel, border1, pix);
         bordersPixel->push_back(pix);
-        cameraWorldToPixel(params, border2, pix);
+        cameraWorldToPixel(cameraModel, border2, pix);
         bordersPixel->push_back(pix);
-        cameraWorldToPixel(params, border3, pix);
+        cameraWorldToPixel(cameraModel, border3, pix);
         bordersPixel->push_back(pix);
-        cameraWorldToPixel(params, border4, pix);
+        cameraWorldToPixel(cameraModel, border4, pix);
         bordersPixel->push_back(pix);
     }
     if (borders != nullptr) {
@@ -524,44 +505,16 @@ Eigen::Vector2d HumanoidModel::cameraViewVectorToPanTilt(
 }
 
 Eigen::Vector2d HumanoidModel::cameraPixelToPanTilt(
-    const CameraParameters& params,
+    const CameraModel& cameraModel,
     const Eigen::Vector2d& pixel,
     Eigen::Vector3d* viewVector)
 {
-    double focalLength = 0.01;
-    //Optical center
-    Eigen::Vector3d center = Model::position("camera", "origin");
-    //Camera orientation
-    Eigen::Matrix3d orientation = Model::orientation("camera", "origin");
-    orientation.transposeInPlace();
-
-    //Half width and height aperture distance on focal plane
-    double widthLen = focalLength*tan(params.widthAperture/2.0);
-    double heightLen = focalLength*tan(params.heightAperture/2.0);
-    //Pixel width and height distance from optical center
-    double pixelWidthPos = pixel.x()*widthLen;
-    double pixelHeightPos = pixel.y()*heightLen;
-
-    //Pixel position in world frame
-    Eigen::Vector3d pixelPos =
-        center
-        + focalLength*orientation.col(0)
-        - pixelWidthPos*orientation.col(1)
-        - pixelHeightPos*orientation.col(2);
-
-    //Compute pixel position and optical center in
-    //robot self frame
-    Eigen::Vector3d centerInSelf = frameInSelf("origin", center);
-    Eigen::Vector3d pixelInSelf = frameInSelf("origin", pixelPos);
-
-    Eigen::Vector3d viewInSelf = pixelInSelf - centerInSelf;
-    viewInSelf.normalize();
+    Eigen::Vector3d viewInSelf = cameraPixelToViewVector(cameraModel, pixel);
 
     //Conversion to yaw/pitch extrinsic euler angles
+    double xyDist = sqrt(viewInSelf.x()*viewInSelf.x() + viewInSelf.y()*viewInSelf.y());
     double yaw = atan2(viewInSelf.y(), viewInSelf.x());
-    double pitch = atan2(
-        -viewInSelf.z(),
-        sqrt(viewInSelf.x()*viewInSelf.x() + viewInSelf.y()*viewInSelf.y()));
+    double pitch = atan2(-viewInSelf.z(),xyDist);
 
     //Assigning view vector
     if (viewVector != nullptr) {
@@ -572,54 +525,25 @@ Eigen::Vector2d HumanoidModel::cameraPixelToPanTilt(
 }
 
 bool HumanoidModel::cameraWorldToPixel(
-    const CameraParameters& params,
+    const CameraModel& cameraModel,
     const Eigen::Vector3d& pos,
     Eigen::Vector2d& pixel)
 {
-    double focalLength = 0.01;
-    //Optical center
-    Eigen::Vector3d center = Model::position("camera", "origin");
-    //Camera orientation
-    Eigen::Matrix3d orientation = Model::orientation("camera", "origin");
-    orientation.transposeInPlace();
+    Eigen::Vector3d posInCamera = Model::position("camera", "origin", pos);
 
-    //Half width and height aperture distance on focal plane
-    double widthLen = focalLength*tan(params.widthAperture/2.0);
-    double heightLen = focalLength*tan(params.heightAperture/2.0);
-
-    //Compute the view line projection on camera plane
-    Eigen::Vector3d planeCenter = center + focalLength*orientation.col(0);
-    Eigen::Vector3d viewVector = pos - center;
-    Eigen::Vector3d widthVector = orientation.col(1);
-    Eigen::Vector3d heightVector = orientation.col(2);
-    //Build left side matrix to be solved
-    Eigen::Matrix3d mat;
-    mat.col(0) = viewVector;
-    mat.col(1) = widthVector;
-    mat.col(2) = heightVector;
-    auto decomposition = mat.colPivHouseholderQr();
-
-    //Check if the projection is not inversible
-    if (!decomposition.isInvertible()) {
-        pixel.setZero();
-        return false;
-    } else {
-        //Solve the linear equation
-        Eigen::Vector3d solution = decomposition.solve(planeCenter-center);
-        //Assign pixel coordinates normalized by frame size
-        pixel.x() = solution(1)/widthLen;
-        pixel.y() = solution(2)/heightLen;
-        //Check if the projection comes from backside
-        if (solution(0) < 0.0 || fabs(pixel.x())>1.0 || fabs(pixel.y())>1.0) { //We also return false if the result is outside the image
-          return false;
-        } else {
-            return true;
-        }
+    if (posInCamera.z() <= 0) {
+      pixel.setZero();
+      return false;
     }
+
+    cv::Point2f imgPos = cameraModel.getImgFromObject(eigen2CV(posInCamera));
+    pixel = cv2Eigen(imgPos);
+
+    return cameraModel.containsPixel(imgPos);
 }
 
 bool HumanoidModel::cameraPanTiltToPixel(
-    const CameraParameters& params,
+    const CameraModel& cameraModel,
     const Eigen::Vector2d& anglesPanTilt,
     Eigen::Vector2d& pixel)
 {
@@ -636,33 +560,28 @@ bool HumanoidModel::cameraPanTiltToPixel(
     Eigen::Vector3d pointInWorld = selfInFrame("origin", vectInSelf + centerInSelf);
 
     //Call WorlToPixel implementation
-    return cameraWorldToPixel(params, pointInWorld, pixel);
+    return cameraWorldToPixel(cameraModel, pointInWorld, pixel);
 }
 
 bool HumanoidModel::cameraLookAt(
-    const CameraParameters& params,
-    const Eigen::Vector3d& posTarget,
-    double offsetPixelTilt)
+    const Eigen::Vector3d& posTarget)
 {
     double panDOF;
     double tiltDOF;
-    bool isSucess = cameraLookAtNoUpdate(panDOF, tiltDOF,
-        params, posTarget, offsetPixelTilt);
-    if (isSucess) {
+    bool isSuccess = cameraLookAtNoUpdate(panDOF, tiltDOF, posTarget);
+    if (isSuccess) {
         Model::setDOF("head_yaw", panDOF);
         Model::setDOF("head_pitch", tiltDOF);
         //Update the model when optimization is enabled
         Model::updateDOFPosition();
     }
 
-    return isSucess;
+    return isSuccess;
 }
 bool HumanoidModel::cameraLookAtNoUpdate(
     double& panDOF,
     double& tiltDOF,
-    const CameraParameters& params,
-    const Eigen::Vector3d& posTarget,
-    double offsetPixelTilt)
+    const Eigen::Vector3d& posTarget)
 {
     //Compute view vector in head yaw frame
     Eigen::Vector3d baseCenter = Model::position("head_yaw", "origin");
@@ -670,19 +589,16 @@ bool HumanoidModel::cameraLookAtNoUpdate(
     Eigen::Vector3d viewVector = posTarget - baseCenter;
     Eigen::Vector3d viewVectorInBase = orientation*viewVector;
 
-    //Compute yaw rotation arround Z aligned with the target
+    //Compute yaw rotation around Z aligned with the target
     double yaw = atan2(viewVectorInBase.y(), viewVectorInBase.x());
     //Assign head yaw DOF
     panDOF = yaw;
 
-    //Compute target in head_pitch frame fixed
-    //to head_yaw frame orientation
+    //Compute target in head_pitch frame fixed to head_yaw frame orientation
     Eigen::Vector3d targetInBase =
         Model::position("origin", "head_yaw", posTarget);
-    //Here, the head_yaw (no update) used is not
-    //aligned to the target point.
-    //The missing yaw orientation is manually
-    //computed to not update the model
+    //Here, the head_yaw (no update) used is not aligned to the target point.
+    //The missing yaw orientation is manually computed to not update the model
     double deltaYaw = yaw - Model::getDOF("head_yaw");
     targetInBase = Eigen::AngleAxisd(-deltaYaw, Eigen::Vector3d::UnitZ())
         .toRotationMatrix() * targetInBase;
@@ -697,15 +613,7 @@ bool HumanoidModel::cameraLookAtNoUpdate(
     //Compute angular correction to handle a non null
     //camera X translation offset
     double epsilon = atan(_headPitchToCameraX/_headPitchToCameraZ);
-
-    //Compute height angular offset from pixel space offset
-    //offset from optical line)
-    double focalLength = 0.01;
-    double heightLen = focalLength*tan(params.heightAperture/2.0);
-    double pixelHeightPos = offsetPixelTilt*heightLen;
-    double beta = -atan(pixelHeightPos/focalLength);
-    //Apply angular correction on view angle
-    beta += epsilon;
+    double beta = epsilon;
 
     //Do the math. Geometric method is used (Alkashi, Trigo, Thales).
     //Use Maxima for system of 3 equations, 3 unknown solving
@@ -729,41 +637,44 @@ bool HumanoidModel::cameraLookAtNoUpdate(
 }
 
 double HumanoidModel::cameraScreenHorizon(
-    const CameraParameters& params,
+    const CameraModel& cameraModel,
     double screenPosWidth)
 {
-    double focalLength = 0.01;
-    //Optical center
-    Eigen::Vector3d center = Model::position("camera", "origin");
-    //Camera orientation
-    Eigen::Matrix3d orientation = Model::orientation("camera", "origin");
-    orientation.transposeInPlace();
-
-    //Half width and height aperture distance on focal plane
-    double widthLen = focalLength*tan(params.widthAperture/2.0);
-    double heightLen = focalLength*tan(params.heightAperture/2.0);
-    //Pixel width distance from optical center
-    double pixelWidthPos = screenPosWidth*widthLen;
-
-    //Position in world frame of asked width pixel line
-    //at zero height
-    Eigen::Vector3d pixelPos = center
-        + focalLength*orientation.col(0)
-        - pixelWidthPos*orientation.col(1);
-
-    //Get position on vertical line where the vector
-    //between the line's point and optical center is
-    //horizontal
-    double t = (center.z()-pixelPos.z())/orientation.col(2).z();
-    //Compute this point in world frame
-    Eigen::Vector3d horizonPos = pixelPos + t*orientation.col(2);
-
-    //Conversion to optical plane vertical coordinate
-    double horizonScreenHeight =
-        (horizonPos-center).dot(orientation.col(2));
-
-    //Convertion to screen normalized height coordinate
-    return -horizonScreenHeight/heightLen;
+  throw std::logic_error(DEBUG_INFO + " not implemented");
+//TODO: Deprecated due to use of old model, require an update when we have time
+//
+//    double focalLength = 0.01;
+//    //Optical center
+//    Eigen::Vector3d center = Model::position("camera", "origin");
+//    //Camera orientation
+//    Eigen::Matrix3d orientation = Model::orientation("camera", "origin");
+//    orientation.transposeInPlace();
+//
+//    //Half width and height aperture distance on focal plane
+//    double widthLen = focalLength*tan(cameraModel.widthAperture/2.0);
+//    double heightLen = focalLength*tan(cameraModel.heightAperture/2.0);
+//    //Pixel width distance from optical center
+//    double pixelWidthPos = screenPosWidth*widthLen;
+//
+//    //Position in world frame of asked width pixel line
+//    //at zero height
+//    Eigen::Vector3d pixelPos = center
+//        + focalLength*orientation.col(0)
+//        - pixelWidthPos*orientation.col(1);
+//
+//    //Get position on vertical line where the vector
+//    //between the line's point and optical center is
+//    //horizontal
+//    double t = (center.z()-pixelPos.z())/orientation.col(2).z();
+//    //Compute this point in world frame
+//    Eigen::Vector3d horizonPos = pixelPos + t*orientation.col(2);
+//
+//    //Conversion to optical plane vertical coordinate
+//    double horizonScreenHeight =
+//        (horizonPos-center).dot(orientation.col(2));
+//
+//    //Convertion to screen normalized height coordinate
+//    return -horizonScreenHeight/heightLen;
 }
 
 LegIK::Vector3D HumanoidModel::buildTargetPos(

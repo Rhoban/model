@@ -46,10 +46,11 @@ int main()
         Eigen::Vector3d lookAtPos3;
         Eigen::Vector3d lookAtPos4;
         Eigen::Vector3d lookAtPos5;
-        Leph::CameraParameters camParams = {80.0*3.14/180.0, 50.0*3.14/180.0};
-        Leph::CameraDraw(camParams, model, viewer);
-        std::cout << "Horizon at screen height: " << 
-            model.cameraScreenHorizon(camParams, 0.0) << std::endl;
+        Leph::CameraModel cameraModel;//TODO: initialize properly
+        Leph::CameraDraw(cameraModel, model, viewer);
+        // Note: Disabled due to change in CameraModel
+        //std::cout << "Horizon at screen height: " << 
+        //    model.cameraScreenHorizon(camParams, 0.0) << std::endl;
         //Display model
         Leph::ModelDraw(model, viewer);
         t += 0.01;

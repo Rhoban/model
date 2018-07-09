@@ -87,7 +87,7 @@ void ModelDraw(Model& model, ModelViewer& viewer, double color)
 }
 
 void CameraDraw(
-    const CameraParameters& params,
+    const CameraModel& cameraModel,
     HumanoidModel& model, 
     ModelViewer& viewer)
 {
@@ -97,19 +97,19 @@ void CameraDraw(
     Eigen::Vector3d groundPos4;
     Eigen::Vector3d groundPos5;
     model.cameraViewVectorToWorld(model.cameraPixelToViewVector(
-        params, Eigen::Vector2d(-1.0, -1.0)),
+        cameraModel, Eigen::Vector2d(-1.0, -1.0)),
         groundPos1);
     model.cameraViewVectorToWorld(model.cameraPixelToViewVector(
-        params, Eigen::Vector2d( 1.0, -1.0)), 
+        cameraModel, Eigen::Vector2d( 1.0, -1.0)), 
         groundPos2);
     model.cameraViewVectorToWorld(model.cameraPixelToViewVector(
-        params, Eigen::Vector2d( 1.0,  1.0)), 
+        cameraModel, Eigen::Vector2d( 1.0,  1.0)), 
         groundPos3);
     model.cameraViewVectorToWorld(model.cameraPixelToViewVector(
-        params, Eigen::Vector2d(-1.0,  1.0)), 
+        cameraModel, Eigen::Vector2d(-1.0,  1.0)), 
         groundPos4);
     model.cameraViewVectorToWorld(model.cameraPixelToViewVector(
-        params, Eigen::Vector2d( 0.0,  0.0)), 
+        cameraModel, Eigen::Vector2d( 0.0,  0.0)), 
         groundPos5);
     viewer.drawLink(model.position("camera", "origin"), groundPos1, 1.0);
     viewer.drawLink(model.position("camera", "origin"), groundPos2, 1.0);
