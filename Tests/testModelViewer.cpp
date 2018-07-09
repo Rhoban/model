@@ -17,11 +17,16 @@ int main()
     params("dynamic:enabled") = 1;
     params("dynamic:step") = 15.0;
     params("dynamic:turn") = 30.0;
+
+    Leph::CameraModel cameraModel;//TODO: initialize properly
+    cameraModel.loadFile("cameraModel.json");
+
         
     double t = 0.0;
+    double dt = std::pow(10,-10);
     while (viewer.update()) {
         //CartWalk generator
-        walk.exec(0.01, params);
+        walk.exec(dt, params);
         //Adapt CartWalk convention to Model convention
         Leph::VectorLabel output = walk.lastOutputs()
             .rename("output", "");
@@ -41,19 +46,13 @@ int main()
         viewer.addTrackedPoint(com);    
         //Display looked at point on the ground
         model.setDOF("head_pitch", 0.3*sin(2.0*t) + 0.8);
-        Eigen::Vector3d lookAtPos1;
-        Eigen::Vector3d lookAtPos2;
-        Eigen::Vector3d lookAtPos3;
-        Eigen::Vector3d lookAtPos4;
-        Eigen::Vector3d lookAtPos5;
-        Leph::CameraModel cameraModel;//TODO: initialize properly
         Leph::CameraDraw(cameraModel, model, viewer);
         // Note: Disabled due to change in CameraModel
         //std::cout << "Horizon at screen height: " << 
         //    model.cameraScreenHorizon(camParams, 0.0) << std::endl;
         //Display model
         Leph::ModelDraw(model, viewer);
-        t += 0.01;
+        t += dt;
     }
 
     return 0;

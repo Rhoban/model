@@ -91,25 +91,27 @@ void CameraDraw(
     HumanoidModel& model, 
     ModelViewer& viewer)
 {
+    double maxX = cameraModel.getImgWidth() - 1;
+    double maxY = cameraModel.getImgHeight() - 1;
     Eigen::Vector3d groundPos1;
     Eigen::Vector3d groundPos2;
     Eigen::Vector3d groundPos3;
     Eigen::Vector3d groundPos4;
     Eigen::Vector3d groundPos5;
     model.cameraViewVectorToWorld(model.cameraPixelToViewVector(
-        cameraModel, Eigen::Vector2d(-1.0, -1.0)),
+        cameraModel, Eigen::Vector2d(0, 0)),
         groundPos1);
     model.cameraViewVectorToWorld(model.cameraPixelToViewVector(
-        cameraModel, Eigen::Vector2d( 1.0, -1.0)), 
+        cameraModel, Eigen::Vector2d(maxX, 0)), 
         groundPos2);
     model.cameraViewVectorToWorld(model.cameraPixelToViewVector(
-        cameraModel, Eigen::Vector2d( 1.0,  1.0)), 
+        cameraModel, Eigen::Vector2d(maxX,  maxY)), 
         groundPos3);
     model.cameraViewVectorToWorld(model.cameraPixelToViewVector(
-        cameraModel, Eigen::Vector2d(-1.0,  1.0)), 
+        cameraModel, Eigen::Vector2d(0,  maxY)), 
         groundPos4);
     model.cameraViewVectorToWorld(model.cameraPixelToViewVector(
-        cameraModel, Eigen::Vector2d( 0.0,  0.0)), 
+        cameraModel, Eigen::Vector2d( maxX/2,  maxY/2)), 
         groundPos5);
     viewer.drawLink(model.position("camera", "origin"), groundPos1, 1.0);
     viewer.drawLink(model.position("camera", "origin"), groundPos2, 1.0);

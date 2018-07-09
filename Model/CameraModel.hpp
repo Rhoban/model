@@ -37,6 +37,9 @@ public:
   /// other internal function
   CameraModel();
 
+  int getImgWidth() const;
+  int getImgHeight() const;
+
   /// Return true if pixel is inside image, false otherwise
   bool containsPixel(const cv::Point2f & imgPos) const;
 

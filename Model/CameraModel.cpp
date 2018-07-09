@@ -35,6 +35,14 @@ CameraModel::CameraModel()
 {
 }
 
+int CameraModel::getImgWidth() const {
+  return imgWidth;
+}
+
+int CameraModel::getImgHeight() const {
+  return imgHeight;
+}
+
 bool CameraModel::containsPixel(const cv::Point2f & imgPos) const {
   bool xOk = imgPos.x >= 0 && imgPos.x < imgWidth;
   bool yOk = imgPos.y >= 0 && imgPos.y <= imgHeight;
