@@ -39,6 +39,10 @@ public:
 
   int getImgWidth() const;
   int getImgHeight() const;
+  double getCenterX() const;
+  double getCenterY() const;
+  double getFocalX() const;
+  double getFocalY() const;
 
   /// Return true if pixel is inside image, false otherwise
   bool containsPixel(const cv::Point2f & imgPos) const;

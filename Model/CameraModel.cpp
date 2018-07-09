@@ -43,6 +43,22 @@ int CameraModel::getImgHeight() const {
   return imgHeight;
 }
 
+double CameraModel::getCenterX() const {
+  return centerX;
+}
+
+double CameraModel::getCenterY() const {
+  return centerY;
+}
+
+double CameraModel::getFocalX() const {
+  return focalX;
+}
+
+double CameraModel::getFocalY() const {
+  return focalY;
+}
+
 bool CameraModel::containsPixel(const cv::Point2f & imgPos) const {
   bool xOk = imgPos.x >= 0 && imgPos.x < imgWidth;
   bool yOk = imgPos.y >= 0 && imgPos.y <= imgHeight;

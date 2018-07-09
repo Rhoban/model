@@ -350,3 +350,19 @@ if (RhAL_FOUND)
     endforeach ()
 endif (RhAL_FOUND)
 
+
+enable_testing()
+ 
+set(TESTS
+  CameraModel
+)
+
+if (CATKIN_ENABLE_TESTING)
+  # create an executable for each test
+  foreach(test ${TESTS})
+    string(REPLACE "/" "_" id ${test})
+    catkin_add_gtest(${id} unit_tests/${test}.cpp)
+    target_link_libraries(${id} model)
+  endforeach(test)
+endif()
+
