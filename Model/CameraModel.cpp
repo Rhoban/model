@@ -1,23 +1,27 @@
 #include "Model/CameraModel.hpp"
 
+#include <rhoban_utils/util.h>
+
+#include <opencv2/imgproc.hpp>
+
 namespace Leph {
 
 CameraModel::CameraModel()
   : focalX(-1), focalY(-1), centerX(-1), centerY(-1),
-    radialCoeffs(Eigen::Vector3d::Zeros()),
-    tangentialCoeffs(Eigen::Vector2d::Zeros())
+    radialCoeffs(Eigen::Vector3d::Zero()),
+    tangentialCoeffs(Eigen::Vector2d::Zero())
 {
 }
 
 cv::Mat CameraModel::getCameraMatrix() const
 {
-  return (Mat_<double>(3, 3) << focalX, 0, centerX, 0, focalY, centerY, 0, 0, 1);
+  return (cv::Mat_<double>(3, 3) << focalX, 0, centerX, 0, focalY, centerY, 0, 0, 1);
 }
 
 cv::Mat CameraModel::getDistortionCoeffs() const
 {
   return
-    (Mat_<double>(5, 1) <<
+    (cv::Mat_<double>(5, 1) <<
      radialCoeffs(0), radialCoeffs(1),
      tangentialCoeffs(0), tangentialCoeffs(1),
      radialCoeffs(2)
@@ -30,8 +34,8 @@ cv::Point2f CameraModel::toCorrectedImg(const cv::Point2f & imgPosUncorrected) c
   cv::Mat outputPoints(1,1,CV_32FC2,0.0);
   float * ptr;
   ptr =  inputPoints.ptr<float>(0);
-  ptr[0] = imgPosUncorrected(0);
-  ptr[1] = imgPosUncorrected(1);
+  ptr[0] = imgPosUncorrected.x;
+  ptr[1] = imgPosUncorrected.y;
   cv::undistortPoints(inputPoints, outputPoints, getCameraMatrix(), getDistortionCoeffs());
   ptr =  outputPoints.ptr<float>(0);
   return cv::Point2f(ptr[0], ptr[1]);
@@ -63,5 +67,26 @@ cv::Point2f CameraModel::toUncorrectedImg(const cv::Point2f & imgPosCorrected) c
 
   return cv::Point2f(xDistort, yDistort);
 }
+
+cv::Point3f CameraModel::getObjectDirectionFromImg(const cv::Point2f & imgPos,
+                                                   bool inputInCorrectedImg) const
+{
+  cv::Point2f correctedPos = imgPos;
+  if (!inputInCorrectedImg) {
+    correctedPos = toCorrectedImg(imgPos);
+  }
+  double dX = (centerX - correctedPos.x);
+  double dY = (centerY - correctedPos.y);
+  double dZ = (focalX + focalY) / 2;// Both should be rather equivalent
+  double length = std::sqrt(dX * dX + dY * dY + dZ * dZ);
+  return cv::Point3f(dX / length, dY / length, dZ / length);
+}
+
+//cv::Point3f CameraModel::getObjectPosFromImgAndPlan(const cv::Point2f & imgPos,
+//                                                    cv::Point4f planEquation,
+//                                                    bool inputInCorrectedImg) const
+//{
+//  throw std::logic_error(DEBUG_INFO + "not implemented");
+//}
 
 }

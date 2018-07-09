@@ -4,6 +4,7 @@
 
 #include <rhoban_utils/serialization/json_serializable.h>
 
+#include <Eigen/Core>
 #include <opencv2/core.hpp>
 
 namespace Leph {
@@ -13,7 +14,7 @@ namespace Leph {
 /// Distortion parameters: radial and tangential
 ///
 /// It is based on the model presented in:
-/// https://docs.opencv.org/3.4.1/dc
+/// https://docs.opencv.org/3.4.1/dc/dbb/tutorial_py_calibration.html
 ///
 /// Image points:
 /// - 2D in the image referential
@@ -50,18 +51,20 @@ public:
   cv::Point2f getImgFromObject(const cv::Point3f & objectPosition,
                                bool outputInCorrectedImg = false) const;
 
-  /// Return the view vector corresponding to a point in the image
+  /// Return the normalized view vector corresponding to a point in the image.
+  ///
   /// If inputInCorrectedImg is enabled, then the imgPos is considered as already corrected
   cv::Point3f getObjectDirectionFromImg(const cv::Point2f & imgPos,
                                         bool inputInCorrectedImg = false) const;
 
-  /// Return the object position of the point at the intersection of the vision
-  /// ray corresponding to imgPos and the plan defined by planEquation.
-  ///
-  /// If inputInCorrectedImg is enabled, then the distortion is not computed
-  cv::Point3f getObjectPosFromImgAndPlan(const cv::Point2f & imgPos,
-                                         cv::Point4f planEquation,
-                                         bool inputInCorrectedImg = false) const;
+// No need to implement it from now
+//  /// Return the object position of the point at the intersection of the vision
+//  /// ray corresponding to imgPos and the plan defined by planEquation.
+//  ///
+//  /// If inputInCorrectedImg is enabled, then the distortion is not computed
+//  cv::Point3f getObjectPosFromImgAndPlan(const cv::Point2f & imgPos,
+//                                         cv::Point4f planEquation,
+//                                         bool inputInCorrectedImg = false) const;
 
 private:
   /// The focal distance along x-axis [px]

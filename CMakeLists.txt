@@ -108,6 +108,7 @@ set(SOURCES_FILES
     Utils/FileModelParameters.cpp
     Utils/GaussianDistribution.cpp
     Ncurses/InterfaceCLI.cpp
+    Model/CameraModel.cpp
     Model/Model.cpp
     Model/HumanoidModel.cpp
     Model/HumanoidFloatingModel.cpp
