@@ -21,6 +21,10 @@ cv::Point3f eigen2CV(const Eigen::Vector3d & p);
 /// It is based on the model presented in:
 /// https://docs.opencv.org/3.4.1/dc/dbb/tutorial_py_calibration.html
 ///
+/// Additionnal ressources can be found at:
+/// - https://docs.opencv.org/3.4/d9/d0c/group__calib3d.html
+///   -> Paragraph Detailed Description
+///
 /// Image points:
 /// - 2D in the image referential
 /// - Top-left is (0,0)

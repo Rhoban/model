@@ -87,15 +87,13 @@ cv::Mat CameraModel::getDistortionCoeffs() const
 
 cv::Point2f CameraModel::toCorrectedImg(const cv::Point2f & imgPosUncorrected) const
 {
-  cv::Mat inputPoints(1,1,CV_32FC2,0.0);
-  cv::Mat outputPoints(1,1,CV_32FC2,0.0);
-  float * ptr;
-  ptr =  inputPoints.ptr<float>(0);
-  ptr[0] = imgPosUncorrected.x;
-  ptr[1] = imgPosUncorrected.y;
-  cv::undistortPoints(inputPoints, outputPoints, getCameraMatrix(), getDistortionCoeffs());
-  ptr =  outputPoints.ptr<float>(0);
-  return cv::Point2f(ptr[0], ptr[1]);
+  std::vector<cv::Point2f> uncorrected = {imgPosUncorrected};
+  std::vector<cv::Point2f> corrected;
+  cv::undistortPoints(uncorrected, corrected, getCameraMatrix(), getDistortionCoeffs());
+  // When P is not provided, the position of the point is in normalized image,
+  // therefore we have to unnormalize the coordinates
+  return cv::Point2f(corrected[0].x * getFocalX() + getCenterX(),
+                     corrected[0].y * getFocalY() + getCenterY());
 }
 
 cv::Point2f CameraModel::toUncorrectedImg(const cv::Point2f & imgPosCorrected) const
