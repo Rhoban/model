@@ -23,7 +23,7 @@ int main()
 
         
     double t = 0.0;
-    double dt = std::pow(10,-10);
+    double dt = std::pow(10,-3);
     while (viewer.update()) {
         //CartWalk generator
         walk.exec(dt, params);
