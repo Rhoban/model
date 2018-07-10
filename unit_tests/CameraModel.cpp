@@ -147,9 +147,10 @@ TEST(getViewVectorFromImg, testSuccess)
   EXPECT_FLOAT_EQ(viewVector.x, 0.0);
   EXPECT_FLOAT_EQ(viewVector.y, 0.0);
   EXPECT_FLOAT_EQ(viewVector.z, 1.0);
-  // Case 2: Only y value
+  // Case 2: Only y value -> value corresponding to a 30 deg angle
   imgPos.x = cameraModel.getCenterX();
-  imgPos.y = cameraModel.getCenterY() + cameraModel.getFocalY()/2;
+  imgPos.y = cameraModel.getCenterY();
+  imgPos.y += cameraModel.getFocalY() * tan(M_PI / 6);
   viewVector = cameraModel.getViewVectorFromImg(imgPos);
   EXPECT_FLOAT_EQ(viewVector.x, 0.0);
   EXPECT_FLOAT_EQ(viewVector.y, 0.5);

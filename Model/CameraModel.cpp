@@ -136,8 +136,8 @@ cv::Point3f CameraModel::getViewVectorFromImg(const cv::Point2f & imgPos,
   if (!inputInCorrectedImg) {
     correctedPos = toCorrectedImg(imgPos);
   }
-  double dX = (centerX - correctedPos.x);
-  double dY = (centerY - correctedPos.y);
+  double dX = (correctedPos.x - centerX);
+  double dY = (correctedPos.y - centerY);
   double dZ = (focalX + focalY) / 2;// Both should be rather equivalent
   double length = std::sqrt(dX * dX + dY * dY + dZ * dZ);
   return cv::Point3f(dX / length, dY / length, dZ / length);
