@@ -1,0 +1,374 @@
+<robot name="metabot">
+
+  <!-- WARNING: this model should be used only for automated testing because dimensions are simplified -->
+  <link name="trunk">
+    <inertial>
+      <origin xyz="0 0 0.0765677" rpy="0 0 0"/>
+      <mass value="1.59255"/>
+      <inertia ixx="0.00665265"  ixy="-4.09628e-06"  ixz="1.79248e-06" iyy="0.00485314" iyz="2.41676e-06" izz="0.00387166" />
+    </inertial>
+  </link>
+
+  <link name="right_hip_yaw">
+    <inertial>
+      <origin xyz="-0.000506838 -2.21546e-11 -0.0373359" rpy="0 0 0"/>
+      <mass value="0.032317"/>
+      <inertia ixx="8.54961e-06"  ixy="-8.88178e-24"  ixz="-2.83665e-09" iyy="2.08698e-05" iyz="-5.68434e-23" izz="1.69968e-05" />
+    </inertial>
+  </link>
+  <joint name="right_hip_yaw" type="revolute">
+    <parent link="trunk"/>
+    <child link="right_hip_yaw"/>
+    <axis xyz="0 0 1"/>
+    <origin xyz="0 -0.046375 0" rpy="0 0 0"/>
+    <limit effort="6.4" velocity="14" lower="-3.14159" upper="3.14159"/>
+  </joint>
+  <link name="right_hip_roll">
+    <inertial>
+      <origin xyz="-0.0225454 -0.000152445 -0.0139042" rpy="0 0 0"/>
+      <mass value="0.288805"/>
+      <inertia ixx="0.000257701"  ixy="-3.42917e-07"  ixz="-4.10246e-06" iyy="0.000293035" iyz="-9.92596e-07" izz="0.000121563" />
+    </inertial>
+  </link>
+  <joint name="right_hip_roll" type="revolute">
+    <parent link="right_hip_yaw"/>
+    <child link="right_hip_roll"/>
+    <axis xyz="1 0 0"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <limit effort="6.4" velocity="14" lower="-3.14159" upper="3.14159"/>
+  </joint>
+
+  <link name="right_hip_pitch">
+    <inertial>
+      <origin xyz="-0.00917061 0.000379397 -0.113155" rpy="0 0 0"/>
+      <mass value="0.218939"/>
+      <inertia ixx="0.000492068"  ixy="4.92539e-07"  ixz="7.08778e-07" iyy="0.000504914" iyz="-5.38995e-05" izz="0.000121477" />
+    </inertial>
+  </link>
+  <joint name="right_hip_pitch" type="revolute">
+    <parent link="right_hip_roll"/>
+    <child link="right_hip_pitch"/>
+    <axis xyz="0 1 0"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <limit effort="6.4" velocity="14" lower="-3.14159" upper="3.14159"/>
+  </joint>
+
+  <link name="right_knee">
+    <inertial>
+      <origin xyz="-3.08493e-09 0.000499994 -0.070075" rpy="0 0 0"/>
+      <mass value="0.078404"/>
+      <inertia ixx="5.40315e-05"  ixy="-9.09495e-22"  ixz="1.06581e-23" iyy="0.000230305" iyz="0" izz="0.000186293" />
+    </inertial>
+  </link>
+  <joint name="right_knee" type="revolute">
+    <parent link="right_hip_pitch"/>
+    <child link="right_knee"/>
+    <axis xyz="0 1 0"/>
+    <origin xyz="0 0 -0.14" rpy="0 0 0"/>
+    <limit effort="6.4" velocity="14" lower="-3.14159" upper="3.14159"/>
+  </joint>
+
+  <link name="right_ankle_pitch">
+    <inertial>
+      <origin xyz="-0.0225454 0.000152444 0.0139042" rpy="0 0 0"/>
+      <mass value="0.288805"/>
+      <inertia ixx="0.000257701"  ixy="-3.42917e-07"  ixz="-4.10246e-06" iyy="0.000293035" iyz="-9.92596e-07" izz="0.000121563" />
+    </inertial>
+  </link>
+  <joint name="right_ankle_pitch" type="revolute">
+    <parent link="right_knee"/>
+    <child link="right_ankle_pitch"/>
+    <axis xyz="0 1 0"/>
+    <origin xyz="0 0 -0.14" rpy="0 0 0"/>
+    <limit effort="6.4" velocity="14" lower="-3.14159" upper="3.14159"/>
+  </joint>
+
+  <link name="right_ankle_roll">
+    <inertial>
+      <origin xyz="-8.32524e-05 -0.00416746 -0.0354118" rpy="0 0 0"/>
+      <mass value="0.196741"/>
+      <inertia ixx="0.000178374"  ixy="6.82609e-08"  ixz="2.96051e-07" iyy="0.000499794" iyz="-2.96051e-06" izz="0.000608649" />
+    </inertial>
+  </link>
+  <joint name="right_ankle_roll" type="revolute">
+    <parent link="right_ankle_pitch"/>
+    <child link="right_ankle_roll"/>
+    <axis xyz="1 0 0"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <limit effort="6.4" velocity="14" lower="-3.14159" upper="3.14159"/>
+  </joint>
+  <link name="right_foot_tip">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="0" />
+      <inertia ixx="0" ixy="0" ixz="0" iyy="0" iyz="0" izz="0" />
+    </inertial>
+  </link>
+  <joint name="right_foot_tip" type="fixed">
+    <origin xyz="0 0 -0.05765" rpy="0 0 0"/>
+    <parent link="right_ankle_roll" />
+    <child link="right_foot_tip" />
+    <axis xyz="0 0 0" />
+  </joint>
+
+  <link name="right_shoulder_pitch">
+    <inertial>
+      <origin xyz="-7.34356e-18 -0.0330724 -7.34356e-18" rpy="0 0 0"/>
+      <mass value="0.029002"/>
+      <inertia ixx="6.48424e-06"  ixy="0"  ixz="0" iyy="1.49472e-05" iyz="8.88178e-24" izz="1.26475e-05" />
+    </inertial>
+  </link>
+  <joint name="right_shoulder_pitch" type="revolute">
+    <parent link="trunk"/>
+    <child link="right_shoulder_pitch"/>
+    <axis xyz="0 1 0"/>
+    <origin xyz="0.0209 -0.05 0.20043" rpy="0 0 0"/>
+    <limit effort="2.8" velocity="12" lower="-3.14159" upper="3.14159"/>
+  </joint>
+
+  <link name="right_shoulder_roll">
+    <inertial>
+      <origin xyz="-0.00345419 1.50736e-09 -0.0344843" rpy="0 0 0"/>
+      <mass value="0.141734"/>
+      <inertia ixx="0.00017908"  ixy="1.77636e-24"  ixz="1.06901e-20" iyy="0.000177275" iyz="1.74732e-05" izz="4.7689e-05" />
+    </inertial>
+  </link>
+  <joint name="right_shoulder_roll" type="revolute">
+    <parent link="right_shoulder_pitch"/>
+    <child link="right_shoulder_roll"/>
+    <axis xyz="1 0 0"/>
+    <origin xyz="0 -0.0585 -0.045" rpy="0 0 0"/>
+    <limit effort="2.8" velocity="12" lower="-3.14159" upper="3.14159"/>
+  </joint>
+  <link name="right_elbow">
+    <inertial>
+      <origin xyz="-0.00359143 -9.63909e-05 -0.0268066" rpy="0 0 0"/>
+      <mass value="0.121691"/>
+      <inertia ixx="0.000117491"  ixy="4.21275e-08"  ixz="-1.72238e-05" iyy="0.00011693" iyz="2.11919e-08" izz="3.09942e-05" />
+    </inertial>
+  </link>
+  <joint name="right_elbow" type="revolute">
+    <parent link="right_shoulder_roll"/>
+    <child link="right_elbow"/>
+    <axis xyz="0 1 0"/>
+    <origin xyz="0.0218 0.007 -0.114678" rpy="0 0 0"/>
+    <limit effort="2.8" velocity="12" lower="-3.14159" upper="3.14159"/>
+  </joint>
+  <link name="right_arm_tip">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="0" />
+      <inertia ixx="0" ixy="0" ixz="0" iyy="0" iyz="0" izz="0" />
+    </inertial>
+  </link>
+  <joint name="right_arm_tip" type="fixed">
+    <origin xyz="-0.01 0 -0.15" rpy="0 0 0"/>
+    <parent link="right_elbow" />
+    <child link="right_arm_tip" />
+    <axis xyz="0 0 0" />
+  </joint>
+
+  <link name="left_hip_yaw">
+    <inertial>
+      <origin xyz="-0.000506838 -2.21546e-11 -0.0373359" rpy="0 0 0"/>
+      <mass value="0.032317"/>
+      <inertia ixx="8.54961e-06"  ixy="-8.88178e-24"  ixz="-2.83665e-09" iyy="2.08698e-05" iyz="-5.68434e-23" izz="1.69968e-05" />
+    </inertial>
+  </link>
+  <joint name="left_hip_yaw" type="revolute">
+    <parent link="trunk"/>
+    <child link="left_hip_yaw"/>
+    <axis xyz="0 0 1"/>
+    <origin xyz="0 0.046375 0" rpy="0 -0 0"/>
+    <limit effort="6.4" velocity="14" lower="-3.14159" upper="3.14159"/>
+  </joint>
+
+  <link name="left_hip_roll">
+    <inertial>
+      <origin xyz="-0.0225454 -0.000152445 -0.0139042" rpy="0 0 0"/>
+      <mass value="0.288805"/>
+      <inertia ixx="0.000257701"  ixy="-3.42917e-07"  ixz="-4.10246e-06" iyy="0.000293035" iyz="-9.92596e-07" izz="0.000121563" />
+    </inertial>
+  </link>
+  <joint name="left_hip_roll" type="revolute">
+    <parent link="left_hip_yaw"/>
+    <child link="left_hip_roll"/>
+    <axis xyz="1 0 0"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <limit effort="6.4" velocity="14" lower="-3.14159" upper="3.14159"/>
+  </joint>
+
+  <link name="left_hip_pitch">
+    <inertial>
+      <origin xyz="-0.00917061 0.000379397 -0.113155" rpy="0 0 0"/>
+      <mass value="0.218939"/>
+      <inertia ixx="0.000492068"  ixy="4.92539e-07"  ixz="7.08778e-07" iyy="0.000504914" iyz="-5.38995e-05" izz="0.000121477" />
+    </inertial>
+  </link>
+  <joint name="left_hip_pitch" type="revolute">
+    <parent link="left_hip_roll"/>
+    <child link="left_hip_pitch"/>
+    <axis xyz="0 1 0"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <limit effort="6.4" velocity="14" lower="-3.14159" upper="3.14159"/>
+  </joint>
+
+  <link name="left_knee">
+    <inertial>
+      <origin xyz="-3.08493e-09 0.000499994 -0.070075" rpy="0 0 0"/>
+      <mass value="0.078404"/>
+      <inertia ixx="5.40315e-05"  ixy="-9.09495e-22"  ixz="1.06581e-23" iyy="0.000230305" iyz="0" izz="0.000186293" />
+    </inertial>
+  </link>
+  <joint name="left_knee" type="revolute">
+    <parent link="left_hip_pitch"/>
+    <child link="left_knee"/>
+    <axis xyz="0 1 0"/>
+    <origin xyz="0 0 -0.14" rpy="0 0 0"/>
+    <limit effort="6.4" velocity="14" lower="-3.14159" upper="3.14159"/>
+  </joint>
+
+  <link name="left_ankle_pitch">
+    <inertial>
+      <origin xyz="-0.0225454 0.000152444 0.0139042" rpy="0 0 0"/>
+      <mass value="0.288805"/>
+      <inertia ixx="0.000257701"  ixy="-3.42917e-07"  ixz="-4.10246e-06" iyy="0.000293035" iyz="-9.92596e-07" izz="0.000121563" />
+    </inertial>
+  </link>
+  <joint name="left_ankle_pitch" type="revolute">
+    <parent link="left_knee"/>
+    <child link="left_ankle_pitch"/>
+    <axis xyz="0 1 0"/>
+    <origin xyz="0 0 -0.14" rpy="0 0 0"/>
+    <limit effort="6.4" velocity="14" lower="-3.14159" upper="3.14159"/>
+  </joint>
+
+  <link name="left_ankle_roll">
+    <inertial>
+      <origin xyz="-8.32528e-05 0.00416746 -0.0354118" rpy="0 0 0"/>
+      <mass value="0.196741"/>
+      <inertia ixx="0.000178374"  ixy="-6.82609e-08"  ixz="2.96051e-07" iyy="0.000499794" iyz="2.96051e-06" izz="0.000608649" />
+    </inertial>
+  </link>
+  <joint name="left_ankle_roll" type="revolute">
+    <parent link="left_ankle_pitch"/>
+    <child link="left_ankle_roll"/>
+    <axis xyz="1 0 0"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <limit effort="6.4" velocity="14" lower="-3.14159" upper="3.14159"/>
+  </joint>
+  <link name="left_foot_tip">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="0" />
+      <inertia ixx="0" ixy="0" ixz="0" iyy="0" iyz="0" izz="0" />
+    </inertial>
+  </link>
+  <joint name="left_foot_tip" type="fixed">
+    <origin xyz="0 0 -0.05765" rpy="0 0 0"/>
+    <parent link="left_ankle_roll" />
+    <child link="left_foot_tip" />
+    <axis xyz="0 0 0" />
+  </joint>
+
+  <link name="left_shoulder_pitch">
+    <inertial>
+      <origin xyz="1.13938e-17 0.0330724 -7.34356e-18" rpy="0 0 0"/>
+      <mass value="0.029002"/>
+      <inertia ixx="6.48424e-06"  ixy="0"  ixz="0" iyy="1.49472e-05" iyz="8.88178e-24" izz="1.26475e-05" />
+    </inertial>
+  </link>
+  <joint name="left_shoulder_pitch" type="revolute">
+    <parent link="trunk"/>
+    <child link="left_shoulder_pitch"/>
+    <axis xyz="0 1 0"/>
+    <origin xyz="0.0209 0.05 0.20043" rpy="0 0 0"/>
+    <limit effort="2.8" velocity="12" lower="-3.14159" upper="3.14159"/>
+  </joint>
+
+  <link name="left_shoulder_roll">
+    <inertial>
+      <origin xyz="-0.00345419 1.20538e-09 -0.0344843" rpy="0 0 0"/>
+      <mass value="0.141734"/>
+      <inertia ixx="0.00017908"  ixy="1.77636e-24"  ixz="1.06901e-20" iyy="0.000177275" iyz="1.74732e-05" izz="4.7689e-05" />
+    </inertial>
+  </link>
+  <joint name="left_shoulder_roll" type="revolute">
+    <parent link="left_shoulder_pitch"/>
+    <child link="left_shoulder_roll"/>
+    <axis xyz="1 0 0"/>
+    <origin xyz="0 0.0585 -0.045" rpy="4.40543e-25 -3.9443e-31 1.32349e-23"/>
+    <limit effort="2.8" velocity="12" lower="-3.14159" upper="3.14159"/>
+  </joint>
+
+  <link name="left_elbow">
+    <inertial>
+      <origin xyz="-0.00359143 -9.63912e-05 -0.0268066" rpy="0 0 0"/>
+      <mass value="0.121691"/>
+      <inertia ixx="0.000117491"  ixy="4.21275e-08"  ixz="-1.72238e-05" iyy="0.00011693" iyz="2.11919e-08" izz="3.09942e-05" />
+    </inertial>
+  </link>
+  <joint name="left_elbow" type="revolute">
+    <parent link="left_shoulder_roll"/>
+    <child link="left_elbow"/>
+    <axis xyz="0 1 0"/>
+    <origin xyz="0.0218 -0.007 -0.114678" rpy="0 -1.75549e-24 0"/>
+    <limit effort="2.8" velocity="12" lower="-3.14159" upper="3.14159"/>
+  </joint>
+  <link name="left_arm_tip">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="0" />
+      <inertia ixx="0" ixy="0" ixz="0" iyy="0" iyz="0" izz="0" />
+    </inertial>
+  </link>
+  <joint name="left_arm_tip" type="fixed">
+    <origin xyz="-0.01 0 -0.15" rpy="0 0 0"/>
+    <parent link="left_elbow" />
+    <child link="left_arm_tip" />
+    <axis xyz="0 0 0" />
+  </joint>
+
+  <link name="head_yaw">
+    <inertial>
+      <origin xyz="0 0 0.0352204" rpy="0 0 0"/>
+      <mass value="0.031552"/>
+      <inertia ixx="8.42675e-06"  ixy="0"  ixz="0" iyy="1.79335e-05" iyz="2.84217e-23" izz="1.40733e-05" />
+    </inertial>
+  </link>
+  <joint name="head_yaw" type="revolute">
+    <parent link="trunk"/>
+    <child link="head_yaw"/>
+    <axis xyz="0 0 1"/>
+    <origin xyz="0.0 0 0.2" rpy="0 0 0"/>
+    <limit effort="2.8" velocity="12" lower="-3.14159" upper="3.14159"/>
+  </joint>
+
+  <link name="head_pitch">
+    <inertial>
+      <origin xyz="0 0 0.06243" rpy="0 0 0"/>
+      <mass value="0.081452"/>
+      <inertia ixx="1.95072e-05"  ixy="-2.52243e-22"  ixz="1.80686e-07" iyy="2.59718e-05" iyz="3.64153e-23" izz="2.26105e-05" />
+    </inertial>
+  </link>
+  <joint name="head_pitch" type="revolute">
+    <parent link="head_yaw"/>
+    <child link="head_pitch"/>
+    <axis xyz="0 1 0"/>
+    <origin xyz="0 0 0.05" rpy="0 -0 0"/>
+    <limit effort="2.8" velocity="12" lower="-3.14159" upper="3.14159"/>
+  </joint>
+  <link name="camera">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="0" />
+      <inertia ixx="0" ixy="0" ixz="0" iyy="0" iyz="0" izz="0" />
+    </inertial>
+  </link>
+  <joint name="camera" type="fixed">
+    <origin xyz="0.05 0 0.05" rpy="-1.5708 0 -1.5708"/>
+    <parent link="head_pitch" />
+    <child link="camera" />
+    <axis xyz="0 0 0" />
+  </joint>
+</robot>

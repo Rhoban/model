@@ -152,6 +152,8 @@ class Model
             const Eigen::Vector3d& point = Eigen::Vector3d::Zero());
 
         /**
+         * Return transformation matrix from dst to src!!! 
+         *
          * Compute the rotation matrix
          * The tranformation matrix is expressing vector from
          * destination frame within source frame.

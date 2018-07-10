@@ -34,16 +34,22 @@ class HumanoidModel : public Model
     public:
 
         /**
-         * Initialize the model with given
-         * Robot type and root updater
-         * and enable floating base 6 DOF if
-         * isFloatingBase is true.
-         * If inertia data and name are not empty,
-         * given inertia override default model data.
-         * If geometry data and name are not empty,
-         * given geometry override default model data.
+         * urdfFile is determined automatically from robotType
          */
         HumanoidModel(
+            RobotType type,
+            const std::string& frameRoot,
+            bool isFloatingBase = true,
+            const Eigen::MatrixXd& inertiaData = Eigen::MatrixXd(),
+            const std::map<std::string, size_t>& inertiaName = {},
+            const Eigen::MatrixXd& geometryData = Eigen::MatrixXd(),
+            const std::map<std::string, size_t>& geometryName = {});
+
+        /**
+         * Forward initialization to initialize function
+         */
+        HumanoidModel(
+            const std::string& urdfFile,
             RobotType type,
             const std::string& frameRoot,
             bool isFloatingBase = true,
@@ -56,6 +62,24 @@ class HumanoidModel : public Model
          * Virtual destructor
          */
         virtual ~HumanoidModel();
+
+
+        /**
+         * Initialize the model with given Robot type and root updater and
+         * enable floating base 6 DOF if isFloatingBase is true.  If inertia
+         * data and name are not empty, given inertia override default model
+         * data.  If geometry data and name are not empty, given geometry
+         * override default model data.
+         */
+        void initialize(
+            const std::string& urdfFile,
+            RobotType type,
+            const std::string& frameRoot,
+            bool isFloatingBase = true,
+            const Eigen::MatrixXd& inertiaData = Eigen::MatrixXd(),
+            const std::map<std::string, size_t>& inertiaName = {},
+            const Eigen::MatrixXd& geometryData = Eigen::MatrixXd(),
+            const std::map<std::string, size_t>& geometryName = {});
         
         /**
          * @Inherit

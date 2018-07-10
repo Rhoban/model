@@ -355,6 +355,7 @@ enable_testing()
  
 set(TESTS
   CameraModel
+  HumanoidModel
 )
 
 if (CATKIN_ENABLE_TESTING)

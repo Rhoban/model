@@ -13,19 +13,52 @@ HumanoidModel::HumanoidModel(
     const std::map<std::string, size_t>& inertiaName,
     const Eigen::MatrixXd& geometryData,
     const std::map<std::string, size_t>& geometryName) :
-    Model(),
-    _type(type)
+    Model()
 {
-    //Select used URDF model file
+    //Select default used URDF model file
     std::string urdfFile;
-    if (_type == SigmabanModel) {
+    if (type == SigmabanModel) {
         urdfFile = "sigmaban.urdf";
-    } else if (_type == SigmabanPlusModel) {
+    } else if (type == SigmabanPlusModel) {
         urdfFile = "sigmaban_plus.urdf";
-    } else if (_type == GrosbanModel) {
+    } else if (type == GrosbanModel) {
         urdfFile = "grosban.urdf";
     }
+    initialize(urdfFile, type, frameRoot, isFloatingBase,
+               inertiaData, inertiaName, geometryData, geometryName);
+}
 
+HumanoidModel::HumanoidModel(
+    const std::string& urdfFile,
+    RobotType type,
+    const std::string& frameRoot,
+    bool isFloatingBase,
+    const Eigen::MatrixXd& inertiaData,
+    const std::map<std::string, size_t>& inertiaName,
+    const Eigen::MatrixXd& geometryData,
+    const std::map<std::string, size_t>& geometryName) :
+    Model()
+{
+  initialize(urdfFile, type, frameRoot, isFloatingBase,
+             inertiaData, inertiaName, geometryData, geometryName);
+}
+
+HumanoidModel::~HumanoidModel()
+{
+}
+
+
+void HumanoidModel::initialize(
+    const std::string& urdfFile,
+    RobotType type,
+    const std::string& frameRoot,
+    bool isFloatingBase,
+    const Eigen::MatrixXd& inertiaData,
+    const std::map<std::string, size_t>& inertiaName,
+    const Eigen::MatrixXd& geometryData,
+    const std::map<std::string, size_t>& geometryName)
+{
+    _type = type;
     //Check for overriden inertia
     bool isInertiaOverride = false;
     Eigen::MatrixXd tmpInertiaData;
@@ -105,9 +138,6 @@ HumanoidModel::HumanoidModel(
     _headPitchToCameraX = Model::position("camera", "head_pitch").x();
 }
 
-HumanoidModel::~HumanoidModel()
-{
-}
 
 void HumanoidModel::boundingBox(size_t frameIndex,
     double& sizeX, double& sizeY, double& sizeZ,
@@ -353,7 +383,7 @@ Eigen::Vector3d HumanoidModel::cameraPixelToViewVector(
   Eigen::Vector3d viewVectorInCamera;
   viewVectorInCamera = cv2Eigen(cameraModel.getViewVectorFromImg(eigen2CV(pixel)));
 
-  return Model::orientation("camera", "origin") * viewVectorInCamera;
+  return Model::orientation("origin", "camera") * viewVectorInCamera;
 }
 Eigen::Vector3d HumanoidModel::cameraPanTiltToViewVector(
     const Eigen::Vector2d& anglesPanTilt)

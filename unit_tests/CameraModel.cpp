@@ -8,7 +8,7 @@ using namespace Leph;
 string getAbsoluteTestFilePath() {
     string filePath = __FILE__;
     string currentDirPath = filePath.substr(0, filePath.rfind("/"));
-    return currentDirPath + "/../Data/cameraModel.json";
+    return currentDirPath + "/../Data/cameraModelTest.json";
 }
 
 /// JsonLoader will be used for 
