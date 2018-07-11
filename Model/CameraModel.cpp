@@ -199,32 +199,32 @@ void CameraModel::fromJson(const Json::Value & v,
                            const std::string & dir_name)
 {
   (void) dir_name;
-  rhoban_utils::tryRead(v, "imgWidth" , &imgWidth );
-  rhoban_utils::tryRead(v, "imgHeight", &imgHeight);
-  rhoban_utils::tryRead(v, "focalX"   , &focalX   );
-  rhoban_utils::tryRead(v, "focalY"   , &focalY   );
-  rhoban_utils::tryRead(v, "centerX"  , &centerX  );
-  rhoban_utils::tryRead(v, "centerY"  , &centerY  );
-  rhoban_utils::tryReadEigen(v, "radialCoeffs"    , &radialCoeffs    );
-  rhoban_utils::tryReadEigen(v, "tangentialCoeffs", &tangentialCoeffs);
+  rhoban_utils::tryRead(v, "img_width" , &imgWidth );
+  rhoban_utils::tryRead(v, "img_height", &imgHeight);
+  rhoban_utils::tryRead(v, "focal_x"   , &focalX   );
+  rhoban_utils::tryRead(v, "focal_y"   , &focalY   );
+  rhoban_utils::tryRead(v, "center_x"  , &centerX  );
+  rhoban_utils::tryRead(v, "center_y"  , &centerY  );
+  rhoban_utils::tryReadEigen(v, "radial_coeffs"    , &radialCoeffs    );
+  rhoban_utils::tryReadEigen(v, "tangential_coeffs", &tangentialCoeffs);
 }
 
 Json::Value CameraModel::toJson() const
 {
   Json::Value v;
-  v["imgWidth" ] = imgWidth ;
-  v["imgHeight"] = imgHeight;
-  v["focalX"   ] = focalX   ;
-  v["focalY"   ] = focalY   ;
-  v["centerX"  ] = centerX  ;
-  v["centerY"  ] = centerY  ;
-  v["radialCoeffs"    ] = rhoban_utils::vector2Json(radialCoeffs    );
-  v["tangentialCoeffs"] = rhoban_utils::vector2Json(tangentialCoeffs);
+  v["img_width" ] = imgWidth ;
+  v["img_height"] = imgHeight;
+  v["focal_x"   ] = focalX   ;
+  v["focal_y"   ] = focalY   ;
+  v["center_x"  ] = centerX  ;
+  v["center_y"  ] = centerY  ;
+  v["radial_coeffs"    ] = rhoban_utils::vector2Json(radialCoeffs    );
+  v["tangential_coeffs"] = rhoban_utils::vector2Json(tangentialCoeffs);
   return v;
 }
 std::string CameraModel::getClassName() const
 {
-  return "CameraModel";
+  return "camera_model";
 }
 
 }

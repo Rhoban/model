@@ -3,10 +3,10 @@
 // focalX = focalY
 // focalY = imgHeight -> vertical aperture 2 * atan(1/2) ~= 53 [deg]
 {
-    "imgWidth" : 800,
-    "imgHeight" : 600,
-    "centerX" : 400,
-    "centerY" : 300,
-    "focalX" : 600,
-    "focalY" : 600
+    "img_width" : 800,
+    "img_height" : 600,
+    "center_x" : 400,
+    "center_y" : 300,
+    "focal_x" : 600,
+    "focal_y" : 600
 }
