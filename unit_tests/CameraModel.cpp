@@ -24,6 +24,19 @@ TEST(jsonLoader, testSuccess)
   EXPECT_EQ(cameraModel.getFocalX(), 600);
   EXPECT_EQ(cameraModel.getFocalY(), 600);
 }
+
+TEST(getFOV, testSuccess)
+{
+  CameraModel cameraModel;
+  cameraModel.loadFile(getAbsoluteTestFilePath());
+
+  // Hand computed values
+  rhoban_utils::Angle fovX = cameraModel.getFOVX();
+  rhoban_utils::Angle fovY = cameraModel.getFOVY();
+  EXPECT_NEAR(fovX.getSignedValue(), 67.38, 0.1);
+  EXPECT_NEAR(fovY.getSignedValue(), 53.13, 0.1);
+}
+
 TEST(getCameraMatrix, testSuccess)
 {
   CameraModel cameraModel;

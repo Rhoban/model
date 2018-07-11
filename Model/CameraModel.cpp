@@ -43,6 +43,10 @@ int CameraModel::getImgHeight() const {
   return imgHeight;
 }
 
+double CameraModel::getImgDiag() const {
+  return std::sqrt(imgWidth*imgWidth + imgHeight*imgHeight);
+}
+
 double CameraModel::getCenterX() const {
   return centerX;
 }
@@ -58,6 +62,33 @@ double CameraModel::getFocalX() const {
 double CameraModel::getFocalY() const {
   return focalY;
 }
+
+rhoban_utils::Angle CameraModel::getFOVX() const {
+  return rhoban_utils::Angle::fromXY(focalX, imgWidth/2) * 2;
+}
+
+rhoban_utils::Angle CameraModel::getFOVY() const {
+  return rhoban_utils::Angle::fromXY(focalY, imgHeight/2) * 2;
+}
+void CameraModel::setCenter(const Eigen::Vector2d & center)
+{
+  centerX = center.x();
+  centerY = center.y();
+}
+
+void CameraModel::setFocal(const Eigen::Vector2d & focal)
+{
+  focalX = focal.x();
+  focalY = focal.y();
+}
+
+void CameraModel::setDistortion(const Eigen::VectorXd & distortion)
+{
+  radialCoeffs.segment(0,2) = distortion.segment(0,2);
+  radialCoeffs(2) = distortion(4);
+  tangentialCoeffs = distortion.segment(2,2);
+}
+
 
 bool CameraModel::containsPixel(const cv::Point2f & imgPos) const {
   bool xOk = imgPos.x >= 0 && imgPos.x < imgWidth;
@@ -83,6 +114,15 @@ cv::Mat CameraModel::getDistortionCoeffs() const
      tangentialCoeffs(0), tangentialCoeffs(1),
      radialCoeffs(2)
     );
+}
+
+Eigen::VectorXd CameraModel::getDistortionCoeffsAsEigen() const
+{
+  Eigen::VectorXd coeffs(5);
+  coeffs.segment(0,2) = radialCoeffs.segment(0,2);
+  coeffs.segment(2,2) = tangentialCoeffs.segment(0,2);
+  coeffs(4) = radialCoeffs(2);
+  return coeffs;
 }
 
 cv::Point2f CameraModel::toCorrectedImg(const cv::Point2f & imgPosUncorrected) const

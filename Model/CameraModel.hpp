@@ -2,6 +2,7 @@
 
 #include "Model/CameraModel.hpp"
 
+#include <rhoban_utils/angle.h>
 #include <rhoban_utils/serialization/json_serializable.h>
 
 #include <Eigen/Core>
@@ -43,10 +44,26 @@ public:
 
   int getImgWidth() const;
   int getImgHeight() const;
+  double getImgDiag() const;
   double getCenterX() const;
   double getCenterY() const;
   double getFocalX() const;
   double getFocalY() const;
+
+  /// Return an approximate of the field of view width
+  rhoban_utils::Angle getFOVX() const;
+
+  /// Return an approximate of the field of view height
+  rhoban_utils::Angle getFOVY() const;
+
+  /// Set center of the focal: (x,y) [px]
+  void setCenter(const Eigen::Vector2d & center);
+
+  /// Set the focal length along both axis: (x,y) [px]
+  void setFocal(const Eigen::Vector2d & focal);
+
+  /// Set the distortion parameters: (k1,k2,p1,p2,k3) [px]
+  void setDistortion(const Eigen::VectorXd & distortion_coeffs);
 
   /// Return true if pixel is inside image, false otherwise
   bool containsPixel(const cv::Point2f & imgPos) const;
@@ -59,6 +76,7 @@ public:
 
   /// 5 by 1 matrix
   cv::Mat getDistortionCoeffs() const;
+  Eigen::VectorXd getDistortionCoeffsAsEigen() const;
 
   /// From uncorrected image to corrected image
   cv::Point2f toCorrectedImg(const cv::Point2f & imgPosUncorrected) const;
