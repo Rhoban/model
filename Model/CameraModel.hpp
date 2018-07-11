@@ -8,12 +8,12 @@
 #include <Eigen/Core>
 #include <opencv2/core.hpp>
 
-namespace Leph {
-
 Eigen::Vector2d cv2Eigen(const cv::Point2f & p);
 Eigen::Vector3d cv2Eigen(const cv::Point3f & p);
 cv::Point2f eigen2CV(const Eigen::Vector2d & p);
 cv::Point3f eigen2CV(const Eigen::Vector3d & p);
+
+namespace Leph {
 
 /// This model contains all the properties of the calibration of a camera:
 /// Intrinsic parameters: center and focal of the camera
@@ -55,6 +55,9 @@ public:
 
   /// Return an approximate of the field of view height
   rhoban_utils::Angle getFOVY() const;
+
+  /// Return an approximate of the diagonal field of view
+  rhoban_utils::Angle getFOVDiag() const;
 
   /// Set center of the focal: (x,y) [px]
   void setCenter(const Eigen::Vector2d & center);

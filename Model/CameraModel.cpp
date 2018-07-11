@@ -5,8 +5,6 @@
 #include <opencv2/calib3d.hpp>
 #include <opencv2/imgproc.hpp>
 
-namespace Leph {
-
 Eigen::Vector2d cv2Eigen(const cv::Point2f & p)
 {
   return Eigen::Vector2d(p.x,p.y);
@@ -26,6 +24,8 @@ cv::Point3f eigen2CV(const Eigen::Vector3d & p)
 {
   return cv::Point3f(p.x(),p.y(),p.z());
 }
+
+namespace Leph {
 
 CameraModel::CameraModel()
   : imgWidth(-1), imgHeight(-1),
@@ -70,6 +70,11 @@ rhoban_utils::Angle CameraModel::getFOVX() const {
 rhoban_utils::Angle CameraModel::getFOVY() const {
   return rhoban_utils::Angle::fromXY(focalY, imgHeight/2) * 2;
 }
+
+rhoban_utils::Angle CameraModel::getFOVDiag() const {
+  return rhoban_utils::Angle::fromXY(getFocalDist(), (imgWidth+imgHeight)/2) * 2;
+}
+
 void CameraModel::setCenter(const Eigen::Vector2d & center)
 {
   centerX = center.x();
