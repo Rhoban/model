@@ -5,6 +5,8 @@
 #include <opencv2/calib3d.hpp>
 #include <opencv2/imgproc.hpp>
 
+#include <iostream>
+
 Eigen::Vector2d cv2Eigen(const cv::Point2f & p)
 {
   return Eigen::Vector2d(p.x,p.y);
@@ -33,6 +35,13 @@ CameraModel::CameraModel()
     radialCoeffs(Eigen::Vector3d::Zero()),
     tangentialCoeffs(Eigen::Vector2d::Zero())
 {
+}
+
+bool CameraModel::isValid() const {
+  return
+    imgWidth > 0 && imgHeight > 0 &&
+    focalX > 0 && focalY > 0 && 
+    centerX > 0 && centerY > 0;
 }
 
 int CameraModel::getImgWidth() const {
@@ -132,6 +141,9 @@ Eigen::VectorXd CameraModel::getDistortionCoeffsAsEigen() const
 
 cv::Point2f CameraModel::toCorrectedImg(const cv::Point2f & imgPosUncorrected) const
 {
+  if (!isValid()) {
+    throw std::runtime_error(DEBUG_INFO + " invalid config");
+  }
   std::vector<cv::Point2f> uncorrected = {imgPosUncorrected};
   std::vector<cv::Point2f> corrected;
   cv::undistortPoints(uncorrected, corrected, getCameraMatrix(), getDistortionCoeffs());
@@ -143,6 +155,9 @@ cv::Point2f CameraModel::toCorrectedImg(const cv::Point2f & imgPosUncorrected) c
 
 cv::Point2f CameraModel::toUncorrectedImg(const cv::Point2f & imgPosCorrected) const
 {
+  if (!isValid()) {
+    throw std::runtime_error(DEBUG_INFO + " invalid config");
+  }
   // Convert the pixel format to something usable by 
   cv::Point3f normalized((imgPosCorrected.x - centerX) / focalX,
                          (imgPosCorrected.y - centerY) / focalY,
@@ -159,12 +174,15 @@ cv::Point2f CameraModel::toUncorrectedImg(const cv::Point2f & imgPosCorrected) c
 cv::Point2f CameraModel::getImgFromObject(const cv::Point3f & objectPosition,
                                           bool outputInCorrectedImg) const
 {
+  if (!isValid()) {
+    throw std::runtime_error(DEBUG_INFO + " invalid config");
+  }
   if (objectPosition.z <= 0.0) {
     throw std::runtime_error(DEBUG_INFO + " invalid object position: z="
                              + std::to_string(objectPosition.z));
   }
 
-  double ratio = - objectPosition.z / getFocalDist();
+  double ratio = getFocalDist() / objectPosition.z;
   double px = ratio * objectPosition.x + centerX;
   double py = ratio * objectPosition.y + centerY;
   cv::Point2f posInCorrected(px,py);
@@ -177,13 +195,16 @@ cv::Point2f CameraModel::getImgFromObject(const cv::Point3f & objectPosition,
 cv::Point3f CameraModel::getViewVectorFromImg(const cv::Point2f & imgPos,
                                               bool inputInCorrectedImg) const
 {
+  if (!isValid()) {
+    throw std::runtime_error(DEBUG_INFO + " invalid config");
+  }
   cv::Point2f correctedPos = imgPos;
   if (!inputInCorrectedImg) {
     correctedPos = toCorrectedImg(imgPos);
   }
   double dX = (correctedPos.x - centerX);
   double dY = (correctedPos.y - centerY);
-  double dZ = (focalX + focalY) / 2;// Both should be rather equivalent
+  double dZ = getFocalDist();
   double length = std::sqrt(dX * dX + dY * dY + dZ * dZ);
   return cv::Point3f(dX / length, dY / length, dZ / length);
 }

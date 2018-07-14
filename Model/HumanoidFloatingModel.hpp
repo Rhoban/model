@@ -29,6 +29,7 @@ class HumanoidFloatingModel : public HumanoidModel
          * Initialization with given robot model
          */
         HumanoidFloatingModel(RobotType type);
+        HumanoidFloatingModel(const std::string & file_path, RobotType type);
 
         /**
          * Return the current support foot

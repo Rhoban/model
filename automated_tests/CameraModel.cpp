@@ -124,12 +124,12 @@ TEST(getImgFromObject, testSuccess)
   cv::Point3f objectPos;
   cv::Point2f imgPos;
 
-  // First simple test: centered pixel should be at center of image
+  // 1. centered pixel should be at center of image
   objectPos = cv::Point3f(0,0,1);
   imgPos = cameraModel.getImgFromObject(objectPos);
   EXPECT_FLOAT_EQ(imgPos.x, cameraModel.getCenterX());
   EXPECT_FLOAT_EQ(imgPos.y, cameraModel.getCenterY());
-  // Second test: zero in z throws runtime_error
+  // 2. zero in z throws runtime_error
   try {
     objectPos = cv::Point3f(0,0,0);
     imgPos = cameraModel.getImgFromObject(objectPos);
@@ -137,7 +137,7 @@ TEST(getImgFromObject, testSuccess)
   } catch (const std::runtime_error & exc) {
     EXPECT_TRUE(true);
   }
-  // Third test: negative value in z throws runtime_error
+  // 3. negative value in z throws runtime_error
   try {
     objectPos = cv::Point3f(0,0,-1);
     imgPos = cameraModel.getImgFromObject(objectPos);
@@ -145,6 +145,16 @@ TEST(getImgFromObject, testSuccess)
   } catch (const std::runtime_error & exc) {
     EXPECT_TRUE(true);
   }
+  // 4. Offset along y-axis
+  objectPos = cv::Point3f(0,cameraModel.getImgHeight()/4.,cameraModel.getFocalDist());
+  imgPos = cameraModel.getImgFromObject(objectPos);
+  EXPECT_FLOAT_EQ(imgPos.x, cameraModel.getCenterX());
+  EXPECT_FLOAT_EQ(imgPos.y, cameraModel.getCenterY() + cameraModel.getImgHeight()/4.);
+  // 5. Offset along y-axis same angle as 4. but further
+  objectPos = cv::Point3f(0,cameraModel.getImgHeight()/2.,cameraModel.getFocalDist() * 2);
+  imgPos = cameraModel.getImgFromObject(objectPos);
+  EXPECT_FLOAT_EQ(imgPos.x, cameraModel.getCenterX());
+  EXPECT_FLOAT_EQ(imgPos.y, cameraModel.getCenterY() + cameraModel.getImgHeight()/4.);
 }
 
 TEST(getViewVectorFromImg, testSuccess)

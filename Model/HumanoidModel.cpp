@@ -475,42 +475,33 @@ bool HumanoidModel::cameraViewVectorToBallWorld(
         forward.normalized()
         *(opticalCenterToPointDist-ballCenterToPointDist);
 
-    //Compute radial vector from ball center and parallel
-    //to projection frame
-    Eigen::Vector3d radialVect1 =
-        forward.cross(Eigen::Vector3d(0.0, 0.0, 1.0));
-    Eigen::Vector3d radialVect2 =
-        forward.cross(radialVect1);
+    //Compute radial vector from ball center and parallel to projection frame
+    Eigen::Vector3d radialVect1 = forward.cross(Eigen::Vector3d(0.0, 0.0, 1.0));
+    Eigen::Vector3d radialVect2 = forward.cross(radialVect1);
     //Normalize them
     radialVect1.normalize();
     radialVect2.normalize();
 
     //Compute point on the ball view border from camera
-    Eigen::Vector3d border1 = ballCenter + radius*radialVect1;
-    Eigen::Vector3d border2 = ballCenter - radius*radialVect1;
-    Eigen::Vector3d border3 = ballCenter + radius*radialVect2;
-    Eigen::Vector3d border4 = ballCenter - radius*radialVect2;
+    std::vector<Eigen::Vector3d> localBorders;
+    localBorders.push_back(ballCenter + radius*radialVect1);
+    localBorders.push_back(ballCenter - radius*radialVect1);
+    localBorders.push_back(ballCenter + radius*radialVect2);
+    localBorders.push_back(ballCenter - radius*radialVect2);
 
     //Compute in the previous position in pixel spaces
     if (ballCenterPixel != nullptr) {
         cameraWorldToPixel(cameraModel, ballCenter, *ballCenterPixel);
     }
-    if (bordersPixel != nullptr) {
+    for (const Eigen::Vector3d & border : localBorders) {
+      if (bordersPixel != nullptr) {
         Eigen::Vector2d pix;
-        cameraWorldToPixel(cameraModel, border1, pix);
+        cameraWorldToPixel(cameraModel, border, pix);
         bordersPixel->push_back(pix);
-        cameraWorldToPixel(cameraModel, border2, pix);
-        bordersPixel->push_back(pix);
-        cameraWorldToPixel(cameraModel, border3, pix);
-        bordersPixel->push_back(pix);
-        cameraWorldToPixel(cameraModel, border4, pix);
-        bordersPixel->push_back(pix);
-    }
-    if (borders != nullptr) {
-        borders->push_back(border1);
-        borders->push_back(border2);
-        borders->push_back(border3);
-        borders->push_back(border4);
+      }
+      if (borders != nullptr) {
+        borders->push_back(border);
+      }
     }
 
     return isBelowHorizon;
@@ -559,7 +550,7 @@ bool HumanoidModel::cameraWorldToPixel(
     const Eigen::Vector3d& pos,
     Eigen::Vector2d& pixel)
 {
-    Eigen::Vector3d posInCamera = Model::position("camera", "origin", pos);
+    Eigen::Vector3d posInCamera = Model::position("origin", "camera", pos);
 
     if (posInCamera.z() <= 0) {
       pixel.setZero();

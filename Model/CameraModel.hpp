@@ -42,6 +42,9 @@ public:
   /// other internal function
   CameraModel();
 
+  /// Return true if the object has valid parameters
+  bool isValid() const;
+
   int getImgWidth() const;
   int getImgHeight() const;
   double getImgDiag() const;

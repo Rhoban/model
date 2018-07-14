@@ -3,9 +3,20 @@
 
 namespace Leph {
 
-HumanoidFloatingModel::HumanoidFloatingModel(
-    RobotType type) :
+HumanoidFloatingModel::HumanoidFloatingModel(RobotType type) :
     HumanoidModel(type, "ROOT"),
+    _supportFoot(LeftSupportFoot),
+    _statePosX(0.0),
+    _statePosY(0.0),
+    _stateRotYaw(0.0)
+{
+    //Center initial position of the model
+    _statePosY = Model::position(
+        "left_foot_tip", "origin").y();
+}
+
+HumanoidFloatingModel::HumanoidFloatingModel(const std::string & urdfFile, RobotType type) :
+    HumanoidModel(urdfFile, type, "ROOT"),
     _supportFoot(LeftSupportFoot),
     _statePosX(0.0),
     _statePosY(0.0),
