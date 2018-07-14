@@ -20,7 +20,7 @@
     <parent link="trunk"/>
     <child link="right_hip_yaw"/>
     <axis xyz="0 0 1"/>
-    <origin xyz="0 -0.046375 0" rpy="0 0 0"/>
+    <origin xyz="0 -0.05 0" rpy="0 0 0"/>
     <limit effort="6.4" velocity="14" lower="-3.14159" upper="3.14159"/>
   </joint>
   <link name="right_hip_roll">
@@ -64,7 +64,7 @@
     <parent link="right_hip_pitch"/>
     <child link="right_knee"/>
     <axis xyz="0 1 0"/>
-    <origin xyz="0 0 -0.14" rpy="0 0 0"/>
+    <origin xyz="0 0 -0.125" rpy="0 0 0"/>
     <limit effort="6.4" velocity="14" lower="-3.14159" upper="3.14159"/>
   </joint>
 
@@ -79,7 +79,7 @@
     <parent link="right_knee"/>
     <child link="right_ankle_pitch"/>
     <axis xyz="0 1 0"/>
-    <origin xyz="0 0 -0.14" rpy="0 0 0"/>
+    <origin xyz="0 0 -0.125" rpy="0 0 0"/>
     <limit effort="6.4" velocity="14" lower="-3.14159" upper="3.14159"/>
   </joint>
 
@@ -105,7 +105,7 @@
     </inertial>
   </link>
   <joint name="right_foot_tip" type="fixed">
-    <origin xyz="0 0 -0.05765" rpy="0 0 0"/>
+    <origin xyz="0 0 -0.05" rpy="0 0 0"/>
     <parent link="right_ankle_roll" />
     <child link="right_foot_tip" />
     <axis xyz="0 0 0" />
@@ -179,7 +179,7 @@
     <parent link="trunk"/>
     <child link="left_hip_yaw"/>
     <axis xyz="0 0 1"/>
-    <origin xyz="0 0.046375 0" rpy="0 -0 0"/>
+    <origin xyz="0 0.05 0" rpy="0 -0 0"/>
     <limit effort="6.4" velocity="14" lower="-3.14159" upper="3.14159"/>
   </joint>
 
@@ -224,7 +224,7 @@
     <parent link="left_hip_pitch"/>
     <child link="left_knee"/>
     <axis xyz="0 1 0"/>
-    <origin xyz="0 0 -0.14" rpy="0 0 0"/>
+    <origin xyz="0 0 -0.125" rpy="0 0 0"/>
     <limit effort="6.4" velocity="14" lower="-3.14159" upper="3.14159"/>
   </joint>
 
@@ -239,7 +239,7 @@
     <parent link="left_knee"/>
     <child link="left_ankle_pitch"/>
     <axis xyz="0 1 0"/>
-    <origin xyz="0 0 -0.14" rpy="0 0 0"/>
+    <origin xyz="0 0 -0.125" rpy="0 0 0"/>
     <limit effort="6.4" velocity="14" lower="-3.14159" upper="3.14159"/>
   </joint>
 
@@ -265,7 +265,7 @@
     </inertial>
   </link>
   <joint name="left_foot_tip" type="fixed">
-    <origin xyz="0 0 -0.05765" rpy="0 0 0"/>
+    <origin xyz="0 0 -0.05" rpy="0 0 0"/>
     <parent link="left_ankle_roll" />
     <child link="left_foot_tip" />
     <axis xyz="0 0 0" />
