@@ -336,12 +336,12 @@ if (BUILD_LEPH_CODE_TESTS)
 endif (BUILD_LEPH_CODE_TESTS)
 
 #Build Apps
-if (BUILD_LEPH_CODE_APPS)
+if (BUILD_LEPH_CODE_APPS OR BUILD_ROBOCUP_VIEWER)
     foreach (APP ${APPS_FILES})
         add_executable(${APP} Apps/${APP}.cpp)
         target_link_libraries(${APP} model)
     endforeach ()
-endif (BUILD_LEPH_CODE_APPS)
+endif (BUILD_LEPH_CODE_APPS OR BUILD_ROBOCUP_VIEWER)
 
 #Build App RhAL Motion 
 if (RhAL_FOUND)
