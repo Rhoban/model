@@ -10,6 +10,7 @@ project(model)
 option(BUILD_LEPH_CODE_TESTS "Build Leph Code Tests" OFF)
 option(BUILD_LEPH_CODE_APPS "Build Leph Code Apps" OFF)
 option(BUILD_LEPH_CODE_VIEWER "Build Leph Code Viewer (SFML)" OFF)
+option(BUILD_ROBOCUP_VIEWER "Force build of the Robocup Viewer (SFML required)" OFF)
 
 set(CATKIN_DEPENDENCIES
   eigen
@@ -19,7 +20,7 @@ set(CATKIN_DEPENDENCIES
   rbdl_urdfreader
   )
 
-if (BUILD_LEPH_CODE_VIEWER)
+if (BUILD_LEPH_CODE_VIEWER OR BUILD_ROBOCUP_VIEWER)
   set(CATKIN_DEPENDENCIES ${CATKIN_DEPENDENCIES} "sfml")
 endif()
 
@@ -197,40 +198,51 @@ set(TESTS_FILES
 )
 
 #Applications main files
-set(APPS_FILES
-    appSplineGenerationCircle
-    appTestLearningFromLogs
-    appExperimentOdometry
-    appOdometryOffline
-    appTrajectoriesFitting
-    appStatsDynaban
-    appOdometryModelCalibration
-    appTrajectoriesGeneration
-    appTrajectoriesCorrection
-    appTrajectoriesSimulation
-    appFeedForwardLogsComparison
-    appHumanoidSimulationIdentification
-    appTrajectoriesLogFitting
-    appMapSeriesLogsCut
-    appModelParametersViewer
-    #appHumanoidSimulationLearning
-    appCameraModelLearning
-    appOdometryModelLearning
-    appOdometryModelLearning2
-    appOdometrySimulator
-    appOdometryPreparePredictiveModelData
-    appOdometryLogsTK
-)
+if (BUILD_LEPH_APPS)
+    set(APPS_FILES
+        appSplineGenerationCircle
+        appTestLearningFromLogs
+        appExperimentOdometry
+        appOdometryOffline
+        appTrajectoriesFitting
+        appStatsDynaban
+        appOdometryModelCalibration
+        appTrajectoriesGeneration
+        appTrajectoriesCorrection
+        appTrajectoriesSimulation
+        appFeedForwardLogsComparison
+        appHumanoidSimulationIdentification
+        appTrajectoriesLogFitting
+        appMapSeriesLogsCut
+        appModelParametersViewer
+        #appHumanoidSimulationLearning
+        appCameraModelLearning
+        appOdometryModelLearning
+        appOdometryModelLearning2
+        appOdometrySimulator
+        appOdometryPreparePredictiveModelData
+        appOdometryLogsTK
+        )
+endif()
 
 #Build App RhIO Viewer 
-if (BUILD_LEPH_CODE_VIEWER)
+if (BUILD_LEPH_CODE_VIEWER OR BUILD_ROBOCUP_VIEWER)
     if (RhIOClient_FOUND)
-        set(APPS_FILES ${APPS_FILES}
-            appRhIOViewerModel
-            appRhIOViewerRobocup
-        )
+        if (DEFINED APPS_FILES)
+            set(APPS_FILES ${APPS_FILES}
+                appRhIOViewerModel
+                appRhIOViewerRobocup
+                )
+        else(DEFINED APPS_FILES)
+            set(APPS_FILES
+                appRhIOViewerModel
+                appRhIOViewerRobocup
+                )
+        endif(DEFINED APPS_FILES)
+    else (RhIOClient_FOUND)
+        message(FATAL_ERROR "Failed to find RhIOClient while asking for viewer")
     endif (RhIOClient_FOUND)
-endif (BUILD_LEPH_CODE_VIEWER)
+endif (BUILD_LEPH_CODE_VIEWER OR BUILD_ROBOCUP_VIEWER)
 
 #LephCode linked libraries
 set(CODE_LIBRARIES
@@ -256,14 +268,18 @@ execute_process(COMMAND "/bin/bash" "-c"
 execute_process(COMMAND "/bin/bash" "-c" 
     "cd ${CMAKE_BINARY_DIR}; ln -f -s ${CMAKE_CURRENT_SOURCE_DIR}/Data/chewbacca_rhal.json chewbacca_rhal.json")
 
-#Viewer (SFML) build option and files
-if (BUILD_LEPH_CODE_VIEWER)
+#Viewer (SFML) build option and files required
+if (BUILD_LEPH_CODE_VIEWER OR BUILD_ROBOCUP_VIEWER)
     add_definitions(-DLEPH_VIEWER_ENABLED)
     set(SOURCES_FILES ${SOURCES_FILES} 
         Viewer/ModelViewer.cpp
         Viewer/ModelDraw.cpp
         TrajectoryGeneration/TrajectoryDisplay.cpp
     )
+endif (BUILD_LEPH_CODE_VIEWER OR BUILD_ROBOCUP_VIEWER)
+
+#Viewer (SFML) tests and apps
+if (BUILD_LEPH_CODE_VIEWER)
     set(TESTS_FILES ${TESTS_FILES} 
         testModelViewer
         testInverseKinematics
