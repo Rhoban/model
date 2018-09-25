@@ -48,6 +48,7 @@ public:
   int getImgWidth() const;
   int getImgHeight() const;
   double getImgDiag() const;
+  Eigen::Vector2d getCenter() const;
   double getCenterX() const;
   double getCenterY() const;
   double getFocalX() const;

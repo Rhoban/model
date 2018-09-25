@@ -56,6 +56,10 @@ double CameraModel::getImgDiag() const {
   return std::sqrt(imgWidth*imgWidth + imgHeight*imgHeight);
 }
 
+Eigen::Vector2d CameraModel::getCenter() const {
+  return Eigen::Vector2d(centerX, centerY);
+}
+
 double CameraModel::getCenterX() const {
   return centerX;
 }
