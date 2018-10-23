@@ -24,6 +24,11 @@ string getAbsoluteCameraModelFilePath() {
 double trunkHeight = 0.3;//[m]
 Eigen::Vector3d expectedCameraPos(0.05, 0.0, 0.6);//[m]
 
+// Position when head_yaw = pi/2
+Eigen::Vector3d expectedCameraPosLeft(0.0, 0.05, 0.6);//[m]
+
+double tol = std::pow(10,-3);
+
 TEST(modelLoader, testSuccess)
 {
   HumanoidModel humanoidModel(getAbsoluteURDFFilePath(), RobotType::SigmabanModel, "trunk");
@@ -155,6 +160,46 @@ TEST(cameraViewVectorToBallWorld, testSuccess)
     EXPECT_NEAR(pixel.y(), cameraModel.getCenterY() + cameraModel.getFocalDist(), 0.1);
 }
 
+TEST(getTransform, initialPosition)
+{
+  HumanoidFloatingModel model(getAbsoluteURDFFilePath(), RobotType::SigmabanModel);
+  model.putOnGround();
+  Eigen::Vector3d expectedPos, receivedPos;
+  Eigen::Affine3d camera2origin = model.getTransform("origin","camera");
+  // Test default position of the camera
+  receivedPos = camera2origin * Eigen::Vector3d(0,0,0);
+  expectedPos = expectedCameraPos;
+  for (int d = 0; d < 3; d++) {
+    EXPECT_NEAR(expectedPos(d), receivedPos(d), tol);
+  }
+  // Test another point in front of the camera
+  receivedPos = camera2origin * Eigen::Vector3d(0,0,1);
+  expectedPos = expectedCameraPos + Eigen::Vector3d(1,0,0);
+  for (int d = 0; d < 3; d++) {
+    EXPECT_NEAR(expectedPos(d), receivedPos(d), tol);
+  }
+}
+
+TEST(getTransform, lookingLeft)
+{
+  HumanoidFloatingModel model(getAbsoluteURDFFilePath(), RobotType::SigmabanModel);
+  model.putOnGround();
+  model.setDOF("head_yaw", M_PI/2);
+  Eigen::Vector3d expectedPos, receivedPos;
+  Eigen::Affine3d camera2origin = model.getTransform("origin","camera");
+  // Test default position of the camera
+  receivedPos = camera2origin * Eigen::Vector3d(0,0,0);
+  expectedPos = expectedCameraPosLeft;
+  for (int d = 0; d < 3; d++) {
+    EXPECT_NEAR(expectedPos(d), receivedPos(d), tol);
+  }
+  // Test another point in front of the camera
+  receivedPos = camera2origin * Eigen::Vector3d(0,0,1);
+  expectedPos = expectedCameraPosLeft + Eigen::Vector3d(0,1,0);
+  for (int d = 0; d < 3; d++) {
+    EXPECT_NEAR(expectedPos(d), receivedPos(d), tol);
+  }
+}
 
 int main(int argc, char **argv) {
     testing::InitGoogleTest(&argc, argv);

@@ -338,6 +338,14 @@ Eigen::Vector3d HumanoidModel::selfFramePosition(
     return translationInBase;
 }
 
+Eigen::Affine3d HumanoidModel::selfFrameTransform(const std::string& frame)
+{
+  Eigen::Affine3d rotation(selfFrameOrientation(frame));
+  Eigen::Translation3d translation(-selfFramePosition(frame));
+  return rotation * translation;
+}
+
+
 Eigen::Vector3d HumanoidModel::selfInFrame(
     const std::string& name, const Eigen::Vector3d& pos)
 {
@@ -407,9 +415,6 @@ bool HumanoidModel::cameraViewVectorToWorld(
 {
     //Optical center
     Eigen::Vector3d center = Model::position("camera", "origin");
-    //Camera orientation
-    Eigen::Matrix3d orientation = Model::orientation("camera", "origin");
-    orientation.transposeInPlace();
 
     //Unnormalize forward pixel vector
     Eigen::Vector3d forward = viewVector;

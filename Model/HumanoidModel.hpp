@@ -145,6 +145,7 @@ class HumanoidModel : public Model
          */
         Eigen::Matrix3d selfFrameOrientation(const std::string& frame);
         Eigen::Vector3d selfFramePosition(const std::string& frame);
+        Eigen::Affine3d selfFrameTransform(const std::string& frame);
 
         /**
          * selfInFrame: return the position of the point expressed in self

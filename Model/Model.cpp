@@ -297,6 +297,21 @@ Eigen::Matrix3d Model::orientation(
         getFrameIndex(srcFrame), 
         getFrameIndex(dstFrame));
 }
+
+Eigen::Affine3d Model::getTransform(size_t srcFrameIndex, size_t dstFrameIndex)
+{
+  Eigen::Affine3d rotation(orientation(srcFrameIndex, dstFrameIndex));
+  Eigen::Translation3d translation(-position(srcFrameIndex, dstFrameIndex));
+  return rotation * translation;
+}
+
+Eigen::Affine3d Model::getTransform(
+    const std::string& srcFrame, const std::string& dstFrame)
+{
+    return getTransform(
+        getFrameIndex(srcFrame), 
+        getFrameIndex(dstFrame));
+}
         
 double Model::orientationYaw(
     size_t srcFrameIndex,

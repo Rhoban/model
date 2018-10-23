@@ -22,7 +22,6 @@ namespace RBDLMath = RigidBodyDynamics::Math;
 class Model
 {
     public:
-
         /**
          * Empty initialization
          */
@@ -168,6 +167,12 @@ class Model
         Eigen::Matrix3d orientation(
             const std::string& srcFrame, 
             const std::string& dstFrame);
+
+        /**
+         * Return the transform Matrix (rotation + translation) from dst to src
+         */
+        Eigen::Affine3d getTransform(size_t srcFrameIndex, size_t dstFrameIndex);
+        Eigen::Affine3d getTransform(const std::string& srcFrame, const std::string& dstFrame);
 
         /**
          * Compute from rotation matrix
