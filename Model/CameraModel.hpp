@@ -44,6 +44,7 @@ public:
 
   /// Return true if the object has valid parameters
   bool isValid() const;
+  std::string getInvalidMsg() const;
 
   int getImgWidth() const;
   int getImgHeight() const;
