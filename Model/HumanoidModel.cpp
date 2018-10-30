@@ -512,6 +512,33 @@ bool HumanoidModel::cameraViewVectorToBallWorld(
     return isBelowHorizon;
 }
 
+bool HumanoidModel::getImgRadiusFromViewVector(
+  const CameraModel& cameraModel,
+  const Eigen::Vector3d & viewVector,
+  double ballRadius,
+  double * minRadiusImg,
+  double * maxRadiusImg)
+{
+  Eigen::Vector3d ballCenter;
+  Eigen::Vector2d ballCenterPixel;
+  std::vector<Eigen::Vector2d, Eigen::aligned_allocator<Eigen::Vector2d>> bordersPixel;
+  bool success = cameraViewVectorToBallWorld(cameraModel, viewVector, ballRadius,
+                                             ballCenter, &ballCenterPixel,
+                                             &bordersPixel);
+  // If viewVectorToBallWorld failed, then send the fail to caller
+  if (!success) {
+    return false;
+  }
+  // For each direction, measure distance to border in order to get min and max
+  *minRadiusImg = std::numeric_limits<double>::max();
+  *maxRadiusImg = 0;
+  for (size_t i = 0; i < bordersPixel.size(); i++) {
+    double borderDistPx = (ballCenterPixel - bordersPixel[i]).norm();
+    if (borderDistPx < *minRadiusImg) *minRadiusImg = borderDistPx;
+    if (borderDistPx > *maxRadiusImg) *maxRadiusImg = borderDistPx;
+  }
+}
+
 Eigen::Vector2d HumanoidModel::cameraViewVectorToPanTilt(
     const Eigen::Vector3d& viewVector)
 {

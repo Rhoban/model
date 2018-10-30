@@ -208,6 +208,19 @@ class HumanoidModel : public Model
             std::vector<Eigen::Vector2d, Eigen::aligned_allocator<Eigen::Vector2d>>* bordersPixel = nullptr,
             std::vector<Eigen::Vector3d>* borders = nullptr);
 
+  /**
+   * Return false if inner call to cameraViewVectorToBallWorld failed
+   * ballRadius: the radius of the ball [m]
+   * minRadiusImg: the minimal apparent radius [px]
+   * maxRadiusImg: the maximal apparent radius [px]
+   */
+        bool getImgRadiusFromViewVector(
+          const CameraModel& cameraModel,
+          const Eigen::Vector3d & viewVector,
+          double ballRadius,
+          double * minRadiusImg,
+          double * maxRadiusImg);
+
         /**
          * Compute from given view vector in world
          * frame the pan/tilt angles in radian with
