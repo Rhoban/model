@@ -537,6 +537,7 @@ bool HumanoidModel::getImgRadiusFromViewVector(
     if (borderDistPx < *minRadiusImg) *minRadiusImg = borderDistPx;
     if (borderDistPx > *maxRadiusImg) *maxRadiusImg = borderDistPx;
   }
+  return true;
 }
 
 Eigen::Vector2d HumanoidModel::cameraViewVectorToPanTilt(
@@ -562,7 +563,9 @@ Eigen::Vector2d HumanoidModel::cameraPixelToPanTilt(
     const Eigen::Vector2d& pixel,
     Eigen::Vector3d* viewVector)
 {
-    Eigen::Vector3d viewInSelf = cameraPixelToViewVector(cameraModel, pixel);
+    Eigen::Vector3d viewInWorld = cameraPixelToViewVector(cameraModel, pixel);
+    Eigen::Matrix3d mat = selfFrameOrientation("origin");
+    Eigen::Vector3d viewInSelf = mat.transpose() * viewInWorld;
 
     //Conversion to yaw/pitch extrinsic euler angles
     double xyDist = sqrt(viewInSelf.x()*viewInSelf.x() + viewInSelf.y()*viewInSelf.y());
