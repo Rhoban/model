@@ -44,6 +44,23 @@ bool CameraModel::isValid() const {
     centerX > 0 && centerY > 0;
 }
 
+std::string CameraModel::getInvalidMsg() const {
+  std::string res = "because : ";
+  if (imgWidth <= 0)
+    res += "imgWidth <= 0 ";
+  if (imgHeight <= 0)
+    res += "imgHeight <= 0 ";
+  if (focalX <= 0)
+    res += "focalX <= 0 ";
+  if (focalY <= 0)
+    res += "focalY <= 0 ";
+  if (centerX <= 0)
+    res += "centerX <= 0 ";
+  if (centerY <= 0)
+    res += "centerY <= 0 ";
+  return res;
+}
+
 int CameraModel::getImgWidth() const {
   return imgWidth;
 }
@@ -146,7 +163,7 @@ Eigen::VectorXd CameraModel::getDistortionCoeffsAsEigen() const
 cv::Point2f CameraModel::toCorrectedImg(const cv::Point2f & imgPosUncorrected) const
 {
   if (!isValid()) {
-    throw std::runtime_error(DEBUG_INFO + " invalid config");
+    throw std::runtime_error(DEBUG_INFO + " invalid config" + getInvalidMsg());
   }
   std::vector<cv::Point2f> uncorrected = {imgPosUncorrected};
   std::vector<cv::Point2f> corrected;
@@ -160,7 +177,7 @@ cv::Point2f CameraModel::toCorrectedImg(const cv::Point2f & imgPosUncorrected) c
 cv::Point2f CameraModel::toUncorrectedImg(const cv::Point2f & imgPosCorrected) const
 {
   if (!isValid()) {
-    throw std::runtime_error(DEBUG_INFO + " invalid config");
+    throw std::runtime_error(DEBUG_INFO + " invalid config" + getInvalidMsg());
   }
   // Convert the pixel format to something usable by 
   cv::Point3f normalized((imgPosCorrected.x - centerX) / focalX,
@@ -179,7 +196,7 @@ cv::Point2f CameraModel::getImgFromObject(const cv::Point3f & objectPosition,
                                           bool outputInCorrectedImg) const
 {
   if (!isValid()) {
-    throw std::runtime_error(DEBUG_INFO + " invalid config");
+    throw std::runtime_error(DEBUG_INFO + " invalid config" + getInvalidMsg());
   }
   if (objectPosition.z <= 0.0) {
     throw std::runtime_error(DEBUG_INFO + " invalid object position: z="
@@ -200,7 +217,7 @@ cv::Point3f CameraModel::getViewVectorFromImg(const cv::Point2f & imgPos,
                                               bool inputInCorrectedImg) const
 {
   if (!isValid()) {
-    throw std::runtime_error(DEBUG_INFO + " invalid config");
+    throw std::runtime_error(DEBUG_INFO + " invalid config" + getInvalidMsg());
   }
   cv::Point2f correctedPos = imgPos;
   if (!inputInCorrectedImg) {
