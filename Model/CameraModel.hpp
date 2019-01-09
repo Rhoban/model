@@ -64,6 +64,12 @@ public:
   /// Return an approximate of the diagonal field of view
   rhoban_utils::Angle getFOVDiag() const;
 
+  /// Set image width [px]
+  void setImgWidth(int width);
+
+  /// Set image height [px]
+  void setImgHeight(int height);
+
   /// Set center of the focal: (x,y) [px]
   void setCenter(const Eigen::Vector2d & center);
 

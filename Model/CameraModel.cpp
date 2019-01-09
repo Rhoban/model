@@ -105,6 +105,16 @@ rhoban_utils::Angle CameraModel::getFOVDiag() const {
   return rhoban_utils::Angle::fromXY(getFocalDist(), (imgWidth+imgHeight)/2) * 2;
 }
 
+void CameraModel::setImgWidth(int width)
+{
+  imgWidth = width;
+}
+
+void CameraModel::setImgHeight(int height)
+{
+  imgHeight = height;
+}
+
 void CameraModel::setCenter(const Eigen::Vector2d & center)
 {
   centerX = center.x();
@@ -196,7 +206,7 @@ cv::Point2f CameraModel::getImgFromObject(const cv::Point3f & objectPosition,
                                           bool outputInCorrectedImg) const
 {
   if (!isValid()) {
-    throw std::runtime_error(DEBUG_INFO + " invalid config" + getInvalidMsg());
+    throw std::runtime_error(DEBUG_INFO + " invalid config " + getInvalidMsg());
   }
   if (objectPosition.z <= 0.0) {
     throw std::runtime_error(DEBUG_INFO + " invalid object position: z="
