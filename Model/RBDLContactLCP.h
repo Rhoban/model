@@ -4,10 +4,10 @@
 #include <rbdl/rbdl.h>
 #include <Eigen/Dense>
 
-namespace Leph {
-
+namespace Leph
+{
 /**
- * Solve the Linear Complimentary 
+ * Solve the Linear Complimentary
  * Problem used to compute which contact
  * constraints have to be activated or is going
  * to release.
@@ -19,7 +19,7 @@ namespace Leph {
  * also given (for joint internal inertia).
  *
  * The constraint set hold unilateral (inequality)
- * for non penetration and bilateral (equality) 
+ * for non penetration and bilateral (equality)
  * constraints representing no-slip infinite friction.
  * All bilateral constraints must have non zero value
  * in associated vector isBilateralConstraint.
@@ -33,16 +33,11 @@ namespace Leph {
  * and non zero elements) is assigned in force
  * field of constraint set.
  */
-void RBDLContactLCP(
-    RigidBodyDynamics::Model& model,
-    const RigidBodyDynamics::Math::VectorNd& Q,
-    const RigidBodyDynamics::Math::VectorNd& QDot,
-    const RigidBodyDynamics::Math::VectorNd& Tau,
-    const RigidBodyDynamics::Math::VectorNd& inertiaOffset,
-    RigidBodyDynamics::ConstraintSet& CS,
-    const Eigen::VectorXi& isBilateralConstraint);
+void RBDLContactLCP(RigidBodyDynamics::Model& model, const RigidBodyDynamics::Math::VectorNd& Q,
+                    const RigidBodyDynamics::Math::VectorNd& QDot, const RigidBodyDynamics::Math::VectorNd& Tau,
+                    const RigidBodyDynamics::Math::VectorNd& inertiaOffset, RigidBodyDynamics::ConstraintSet& CS,
+                    const Eigen::VectorXi& isBilateralConstraint);
 
-}
+}  // namespace Leph
 
 #endif
-

@@ -3,45 +3,43 @@
 
 #include "Spline/Spline.hpp"
 
-namespace Leph {
-
+namespace Leph
+{
 /**
  * LinearSpline
  *
- * Implementation of 3th order 
- * polynomial splines 
+ * Implementation of 3th order
+ * polynomial splines
  */
 class LinearSpline : public Spline
 {
-    public:
+public:
+  /**
+   * Add a new point with its time and position value,
+   */
+  void addPoint(double time, double position);
 
-        /**
-         * Add a new point with its time and position value,
-         */
-        void addPoint(double time, double position);
-        
-    private:
+private:
+  /**
+   * Simple point struture
+   */
+  struct Point
+  {
+    double time;
+    double position;
+  };
 
-        /**
-         * Simple point struture
-         */
-        struct Point {
-            double time;
-            double position;
-        };
+  /**
+   * Points container
+   */
+  std::vector<Point> _points;
 
-        /**
-         * Points container
-         */
-        std::vector<Point> _points;
-        
-        /**
-         * Recompute splines interpolation model
-         */
-        void computeSplines();
+  /**
+   * Recompute splines interpolation model
+   */
+  void computeSplines();
 };
 
-}
+}  // namespace Leph
 
 #endif
-

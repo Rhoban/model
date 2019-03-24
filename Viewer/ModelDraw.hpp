@@ -6,39 +6,31 @@
 #include "Model/HumanoidSimulation.hpp"
 #include "Viewer/ModelViewer.hpp"
 
-namespace Leph {
-
+namespace Leph
+{
 /**
  * ModelDraw
  *
  * Draw the given Model with given ModelViewer
  * and with optional color coeficient
  */
-void ModelDraw(
-    Model& model, ModelViewer& viewer, 
-    double color = 1.0);
+void ModelDraw(Model& model, ModelViewer& viewer, double color = 1.0);
 
 /**
  * CameraDraw
  *
- * Draw with given HumanoidModel the camera 
+ * Draw with given HumanoidModel the camera
  * projected field of view with given ModelViewer
  */
-void CameraDraw(
-    const CameraModel& cameraModel, 
-    HumanoidModel& model, 
-    ModelViewer& viewer);
+void CameraDraw(const CameraModel& cameraModel, HumanoidModel& model, ModelViewer& viewer);
 
 /**
  * FieldDraw
  *
- * Draw a Robocup field at given center and given 
+ * Draw a Robocup field at given center and given
  * yaw orientation
  */
-void FieldDraw(
-    const Eigen::Vector3d& center,
-    double yaw,
-    ModelViewer& viewer);
+void FieldDraw(const Eigen::Vector3d& center, double yaw, ModelViewer& viewer);
 
 /**
  * CleatsDraw
@@ -46,11 +38,8 @@ void FieldDraw(
  * Display foot cleat of given
  * HumanoidModel given given force
  */
-void CleatsDraw(
-    HumanoidSimulation& simulation,
-    ModelViewer& viewer);
+void CleatsDraw(HumanoidSimulation& simulation, ModelViewer& viewer);
 
-}
+}  // namespace Leph
 
 #endif
-

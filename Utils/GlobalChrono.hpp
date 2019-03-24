@@ -3,8 +3,8 @@
 
 #include "Utils/Chrono.hpp"
 
-namespace Leph {
-
+namespace Leph
+{
 /**
  * GlobalChrono
  *
@@ -13,19 +13,17 @@ namespace Leph {
  */
 class GlobalChrono
 {
-    public:
-
-        /**
-         * Return global Chrono instance
-         */
-        inline static Chrono& get()
-        {
-            static Chrono chrono;
-            return chrono;
-        }
+public:
+  /**
+   * Return global Chrono instance
+   */
+  inline static Chrono& get()
+  {
+    static Chrono chrono;
+    return chrono;
+  }
 };
 
-}
+}  // namespace Leph
 
 #endif
-

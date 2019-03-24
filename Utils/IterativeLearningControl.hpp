@@ -6,8 +6,8 @@
 #include "Types/VectorLabel.hpp"
 #include "Spline/LinearSpline.hpp"
 
-namespace Leph {
-
+namespace Leph
+{
 /**
  * IterativeLearningControl
  *
@@ -17,81 +17,76 @@ namespace Leph {
  */
 class IterativeLearningControl
 {
-    public:
+public:
+  /**
+   * Initialization with
+   * the number of lag tick and learning rate
+   */
+  IterativeLearningControl(size_t log, double learningRate);
 
-        /**
-         * Initialization with 
-         * the number of lag tick and learning rate
-         */
-        IterativeLearningControl(size_t log, double learningRate);
+  /**
+   * Return offset to add on all degrees of
+   * freedom at given phase
+   */
+  VectorLabel getOffsets(double phase) const;
 
-        /**
-         * Return offset to add on all degrees of
-         * freedom at given phase
-         */
-        VectorLabel getOffsets(double phase) const;
+  /**
+   * Return the summed error of last cycle
+   * iteration and last update error
+   */
+  const VectorLabel& getSumErrors() const;
+  const VectorLabel& getLastErrors() const;
 
-        /**
-         * Return the summed error of last cycle
-         * iteration and last update error
-         */
-        const VectorLabel& getSumErrors() const;
-        const VectorLabel& getLastErrors() const;
+  /**
+   * Update the compensation spline. Current phase,
+   * order send to the motor and current motor
+   * read positions are given.
+   */
+  void update(double phase, const VectorLabel& goals, const VectorLabel& motors);
 
-        /**
-         * Update the compensation spline. Current phase, 
-         * order send to the motor and current motor
-         * read positions are given.
-         */
-        void update(double phase, 
-            const VectorLabel& goals, 
-            const VectorLabel& motors);
+  /**
+   * Direct access to convergence learning rate
+   */
+  const double& learningRate() const;
+  double& learningRate();
 
-        /**
-         * Direct access to convergence learning rate
-         */
-        const double& learningRate() const;
-        double& learningRate();
+private:
+  /**
+   * Iteration learning rate
+   */
+  double _learningRate;
 
-    private:
+  /**
+   * The number of tick in the past
+   * to consider
+   */
+  size_t _lag;
 
-        /**
-         * Iteration learning rate
-         */
-        double _learningRate;
+  /**
+   * History of motor reference to compute
+   * error with lag
+   */
+  std::deque<VectorLabel> _container;
 
-        /**
-         * The number of tick in the past
-         * to consider
-         */
-        size_t _lag;
+  /**
+   * Current cycle and next cycle
+   * position offset for each degrees of freedom
+   */
+  std::vector<LinearSpline> _currentOffsets;
+  std::vector<LinearSpline> _nextOffsets;
 
-        /**
-         * History of motor reference to compute
-         * error with lag
-         */
-        std::deque<VectorLabel> _container;
+  /**
+   * Error summed on last and current cycle
+   */
+  VectorLabel _pastSumErrors;
+  VectorLabel _currentSumErrors;
 
-        /**
-         * Current cycle and next cycle 
-         * position offset for each degrees of freedom
-         */
-        std::vector<LinearSpline> _currentOffsets;
-        std::vector<LinearSpline> _nextOffsets;
-
-        /**
-         * Error summed on last and current cycle
-         */
-        VectorLabel _pastSumErrors;
-        VectorLabel _currentSumErrors;
-
-        /**
-         * Last update error
-         */
-        VectorLabel _lastErrors;
+  /**
+   * Last update error
+   */
+  VectorLabel _lastErrors;
 };
 
-}
+}  // namespace Leph
 
 #endif
-

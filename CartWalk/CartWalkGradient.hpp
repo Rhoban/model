@@ -5,8 +5,8 @@
 #include "Types/VectorLabel.hpp"
 #include "CartWalk/CartWalkProxy.hpp"
 
-namespace Leph {
-
+namespace Leph
+{
 /**
  * CartWalkGradient
  *
@@ -16,32 +16,26 @@ namespace Leph {
  */
 class CartWalkGradient
 {
-    public:
+public:
+  /**
+   * Numerical differentiation of CartWalk
+   * outputs with respect to parameters
+   * at given phase, static and dynamic parameters.
+   * Return a jacobian Matrix with outputs in rows
+   * and parameters differentiation in cols.
+   * Rows and Cols are indexed with respect to
+   * walk VectorLabel indexes.
+   * Used differentiation step could be given
+   */
+  Matrix differentiation(double phase, const VectorLabel& params, double diffStep = 0.0001);
 
-        /**
-         * Numerical differentiation of CartWalk
-         * outputs with respect to parameters
-         * at given phase, static and dynamic parameters.
-         * Return a jacobian Matrix with outputs in rows
-         * and parameters differentiation in cols.
-         * Rows and Cols are indexed with respect to
-         * walk VectorLabel indexes.
-         * Used differentiation step could be given
-         */
-        Matrix differentiation(
-            double phase,
-            const VectorLabel& params,
-            double diffStep = 0.0001);
-
-    private:
-
-        /**
-         * CartWalk Proxy instance
-         */
-        CartWalkProxy _walk;
+private:
+  /**
+   * CartWalk Proxy instance
+   */
+  CartWalkProxy _walk;
 };
 
-}
+}  // namespace Leph
 
 #endif
-

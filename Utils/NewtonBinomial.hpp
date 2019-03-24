@@ -4,8 +4,8 @@
 #include "Utils/Combination.hpp"
 #include "Spline/Polynom.hpp"
 
-namespace Leph {
-
+namespace Leph
+{
 /**
  * NewtonBinomial
  *
@@ -15,20 +15,17 @@ namespace Leph {
  */
 class NewtonBinomial
 {
-    public:
+public:
+  /**
+   * Expand the given formula (x + y)^degree
+   * and return the polynom in x whose coefficient
+   * are computed using binomial coefficient
+   */
+  static Polynom expandPolynom(double y, unsigned int degree);
 
-        /**
-         * Expand the given formula (x + y)^degree
-         * and return the polynom in x whose coefficient
-         * are computed using binomial coefficient
-         */
-        static Polynom expandPolynom(
-            double y, unsigned int degree);
-
-    private:
+private:
 };
 
-}
+}  // namespace Leph
 
 #endif
-

@@ -4,8 +4,8 @@
 #include <vector>
 #include "Types/types.h"
 
-namespace Leph {
-
+namespace Leph
+{
 /**
  * GeometricMedian
  *
@@ -17,52 +17,48 @@ namespace Leph {
  */
 class GeometricMedian
 {
-    public:
+public:
+  /**
+   * Add given point to internal
+   * container
+   */
+  void add(const Vector& point);
 
-        /**
-         * Add given point to internal
-         * container
-         */
-        void add(const Vector& point);
+  /**
+   * Return the number of registered
+   * points
+   */
+  size_t size() const;
 
-        /**
-         * Return the number of registered
-         * points
-         */
-        size_t size() const;
+  /**
+   * Return the points dimension
+   */
+  size_t dimension() const;
 
-        /**
-         * Return the points dimension
-         */
-        size_t dimension() const;
+  /**
+   * Compute iteratively the geometric
+   * median of given set points.
+   * Convergence criterion is either
+   * the loop number of iteration or
+   * median update distance threshold.
+   * Both threshold could be negative
+   * to not be used.
+   */
+  Vector median(double deltaNorm, int maxLoopNumber) const;
 
-        /**
-         * Compute iteratively the geometric
-         * median of given set points.
-         * Convergence criterion is either
-         * the loop number of iteration or
-         * median update distance threshold.
-         * Both threshold could be negative
-         * to not be used.
-         */
-        Vector median(
-            double deltaNorm, int maxLoopNumber)  const;
+private:
+  /**
+   * Points container
+   */
+  std::vector<Vector> _points;
 
-    private:
-
-        /**
-         * Points container
-         */
-        std::vector<Vector> _points;
-
-        /**
-         * Return the gravity center of 
-         * registered points
-         */
-        Vector mean() const;
+  /**
+   * Return the gravity center of
+   * registered points
+   */
+  Vector mean() const;
 };
 
-}
+}  // namespace Leph
 
 #endif
-

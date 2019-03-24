@@ -3,8 +3,8 @@
 
 #include "TimeSeries/Concept.hpp"
 
-namespace Leph {
-
+namespace Leph
+{
 /**
  * FootStepIntegratorConcept
  *
@@ -22,31 +22,27 @@ namespace Leph {
  */
 class FootStepIntegratorConcept : public Concept
 {
-    public:
-        
-        /**
-         * Inherit Concept
-         */
-        virtual std::string name() const override;
-        virtual size_t inputSize() const override;
-        virtual size_t outputSize() const override;
+public:
+  /**
+   * Inherit Concept
+   */
+  virtual std::string name() const override;
+  virtual size_t inputSize() const override;
+  virtual size_t outputSize() const override;
 
-        /**
-         * Inherit Optimize
-         */
-        virtual size_t parameterSize() const override;
-        virtual Leph::MetaParameter defaultParameter
-            (size_t index) const override;
+  /**
+   * Inherit Optimize
+   */
+  virtual size_t parameterSize() const override;
+  virtual Leph::MetaParameter defaultParameter(size_t index) const override;
 
-    protected:
-        
-        /**
-         * Inherit Concept
-         */
-        virtual bool doCompute(double time) override;
+protected:
+  /**
+   * Inherit Concept
+   */
+  virtual bool doCompute(double time) override;
 };
 
-}
+}  // namespace Leph
 
 #endif
-

@@ -4,8 +4,8 @@
 #include "TimeSeries/Concept.hpp"
 #include "Model/HumanoidFixedPressureModel.hpp"
 
-namespace Leph {
-
+namespace Leph
+{
 /**
  * HumanoidSensorsModelConcept
  *
@@ -52,43 +52,38 @@ namespace Leph {
  */
 class HumanoidSensorsModelConcept : public Concept
 {
-    public:
-        
-        /**
-         * Initialization with robot type
-         */
-        HumanoidSensorsModelConcept(RobotType type);
-        
-        /**
-         * Inherit Concept
-         */
-        virtual std::string name() const override;
-        virtual size_t inputSize() const override;
-        virtual size_t outputSize() const override;
+public:
+  /**
+   * Initialization with robot type
+   */
+  HumanoidSensorsModelConcept(RobotType type);
 
-        /**
-         * Inherit Optimize
-         */
-        virtual size_t parameterSize() const override;
-        virtual Leph::MetaParameter defaultParameter
-            (size_t index) const override;
+  /**
+   * Inherit Concept
+   */
+  virtual std::string name() const override;
+  virtual size_t inputSize() const override;
+  virtual size_t outputSize() const override;
 
-    protected: 
+  /**
+   * Inherit Optimize
+   */
+  virtual size_t parameterSize() const override;
+  virtual Leph::MetaParameter defaultParameter(size_t index) const override;
 
-        /**
-         * Inherit Concept
-         */
-        virtual bool doCompute(double time) override;
+protected:
+  /**
+   * Inherit Concept
+   */
+  virtual bool doCompute(double time) override;
 
-    private:
-
-        /**
-         * Internal Humanoid model
-         */
-        HumanoidFixedPressureModel _model;
+private:
+  /**
+   * Internal Humanoid model
+   */
+  HumanoidFixedPressureModel _model;
 };
 
-}
+}  // namespace Leph
 
 #endif
-

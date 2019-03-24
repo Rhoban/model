@@ -13,7 +13,8 @@
 #include "math_log.h"
 using namespace std;
 
-void MathLog::fatal_error(string msg) {
+void MathLog::fatal_error(string msg)
+{
   stringstream reason;
   reason << "FATAL ERROR : " << msg;
   cerr << reason.str();
@@ -21,8 +22,10 @@ void MathLog::fatal_error(string msg) {
   throw std::runtime_error(reason.str());
 }
 
-void MathLog::check(string msg, bool cond) {
-  if (!cond) {
+void MathLog::check(string msg, bool cond)
+{
+  if (!cond)
+  {
     stringstream reason;
     reason << "ASSERTION FAILER : " << msg;
     cerr << reason.str();
@@ -30,7 +33,8 @@ void MathLog::check(string msg, bool cond) {
   }
 }
 
-void MathLog::comment(string msg) {
+void MathLog::comment(string msg)
+{
   cout << "LOG: " << msg << endl;
   cout.flush();
 }

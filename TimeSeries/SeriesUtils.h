@@ -9,60 +9,39 @@
 #include "TimeSeries/TimeSeries.hpp"
 #include "Plot/Plot.hpp"
 
-namespace Leph {
-
+namespace Leph
+{
 /**
- * Add to given Plot the two given 
+ * Add to given Plot the two given
  * TimeSeries name against each others
  */
-void plotPhase(
-    Leph::Plot& plot,
-    const Leph::ModelSeries& model, 
-    const std::string& labelX, 
-    const std::string& nameX, 
-    const std::string& labelY, 
-    const std::string& nameY,
-    double maxTime = -1.0);
+void plotPhase(Leph::Plot& plot, const Leph::ModelSeries& model, const std::string& labelX, const std::string& nameX,
+               const std::string& labelY, const std::string& nameY, double maxTime = -1.0);
 
 /**
- * Add to given Plot the given 
+ * Add to given Plot the given
  * TimeSeries name against its future data
  */
-void plotFuture(
-    Leph::Plot& plot,
-    Leph::ModelSeries& model, 
-    const std::string& name);
+void plotFuture(Leph::Plot& plot, Leph::ModelSeries& model, const std::string& name);
 
 /**
- * Predict and return a value with given 
+ * Predict and return a value with given
  * inputs from given named regression model.
  */
-double modelPredict(
-    Leph::ModelSeries& model, 
-    const std::string& name,
-    const std::vector<double>& inputs);
+double modelPredict(Leph::ModelSeries& model, const std::string& name, const std::vector<double>& inputs);
 
 /**
  * Compute the sum error and sum squared error between
  * the two given time series.
  */
-void seriesCompare(
-    const Leph::TimeSeries& series1, 
-    const Leph::TimeSeries& series2,
-    double beginTime,
-    double endTime,
-    double& sumError,
-    double& sumSquaredError,
-    int& count);
+void seriesCompare(const Leph::TimeSeries& series1, const Leph::TimeSeries& series2, double beginTime, double endTime,
+                   double& sumError, double& sumSquaredError, int& count);
 
 /**
  * Set up and configure the ModelSeries
  */
-void initModelSeries(Leph::ModelSeries& model, 
-    bool withMocapConcept,
-    bool withDeltaRegression,
-    bool withWalkRegression,
-    bool noSensor = false);
+void initModelSeries(Leph::ModelSeries& model, bool withMocapConcept, bool withDeltaRegression, bool withWalkRegression,
+                     bool noSensor = false);
 
 /**
  * Append to given ModelSeries data from
@@ -70,13 +49,8 @@ void initModelSeries(Leph::ModelSeries& model,
  * If withMocap is false, motion capture
  * data are not loaded
  */
-void appendModelSeries(
-    Leph::ModelSeries& model, 
-    double time, 
-    const Leph::VectorLabel& logs,
-    bool invMocap);
+void appendModelSeries(Leph::ModelSeries& model, double time, const Leph::VectorLabel& logs, bool invMocap);
 
-}
+}  // namespace Leph
 
 #endif
-

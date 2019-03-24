@@ -8,13 +8,13 @@
 #include <Eigen/Core>
 #include <opencv2/core.hpp>
 
-Eigen::Vector2d cv2Eigen(const cv::Point2f & p);
-Eigen::Vector3d cv2Eigen(const cv::Point3f & p);
-cv::Point2f eigen2CV(const Eigen::Vector2d & p);
-cv::Point3f eigen2CV(const Eigen::Vector3d & p);
+Eigen::Vector2d cv2Eigen(const cv::Point2f& p);
+Eigen::Vector3d cv2Eigen(const cv::Point3f& p);
+cv::Point2f eigen2CV(const Eigen::Vector2d& p);
+cv::Point3f eigen2CV(const Eigen::Vector3d& p);
 
-namespace Leph {
-
+namespace Leph
+{
 /// This model contains all the properties of the calibration of a camera:
 /// Intrinsic parameters: center and focal of the camera
 /// Distortion parameters: radial and tangential
@@ -35,7 +35,8 @@ namespace Leph {
 /// - Position of the object in the camera referential
 /// - x and y matches the axes of the camera
 /// - z points toward direction of the camera
-class CameraModel : public rhoban_utils::JsonSerializable {
+class CameraModel : public rhoban_utils::JsonSerializable
+{
 public:
   /// Initial content does not allow to compute any transformation since it is
   /// intentionally not valid. Members have to be initialized before calling any
@@ -71,16 +72,16 @@ public:
   void setImgHeight(int height);
 
   /// Set center of the focal: (x,y) [px]
-  void setCenter(const Eigen::Vector2d & center);
+  void setCenter(const Eigen::Vector2d& center);
 
   /// Set the focal length along both axis: (x,y) [px]
-  void setFocal(const Eigen::Vector2d & focal);
+  void setFocal(const Eigen::Vector2d& focal);
 
   /// Set the distortion parameters: (k1,k2,p1,p2,k3) [px]
-  void setDistortion(const Eigen::VectorXd & distortion_coeffs);
+  void setDistortion(const Eigen::VectorXd& distortion_coeffs);
 
   /// Return true if pixel is inside image, false otherwise
-  bool containsPixel(const cv::Point2f & imgPos) const;
+  bool containsPixel(const cv::Point2f& imgPos) const;
 
   /// Average between x and y focals [px]
   double getFocalDist() const;
@@ -93,10 +94,10 @@ public:
   Eigen::VectorXd getDistortionCoeffsAsEigen() const;
 
   /// From uncorrected image to corrected image
-  cv::Point2f toCorrectedImg(const cv::Point2f & imgPosUncorrected) const;
+  cv::Point2f toCorrectedImg(const cv::Point2f& imgPosUncorrected) const;
 
   /// From corrected image to uncorrected image
-  cv::Point2f toUncorrectedImg(const cv::Point2f & imgPosCorrected) const;
+  cv::Point2f toUncorrectedImg(const cv::Point2f& imgPosCorrected) const;
 
   /// Return the position of the object (in camera referential).
   ///
@@ -104,29 +105,25 @@ public:
   /// position return is in the correctedImage
   ///
   /// Throws a runtime_error if objectPosition.z <= 0 (behind plane)
-  cv::Point2f getImgFromObject(const cv::Point3f & objectPosition,
-                               bool outputInCorrectedImg = false) const;
+  cv::Point2f getImgFromObject(const cv::Point3f& objectPosition, bool outputInCorrectedImg = false) const;
 
   /// Return the normalized view vector corresponding to a point in the image.
   ///
   /// If inputInCorrectedImg is enabled, then the imgPos is considered as already corrected
-  cv::Point3f getViewVectorFromImg(const cv::Point2f & imgPos,
-                                   bool inputInCorrectedImg = false) const;
+  cv::Point3f getViewVectorFromImg(const cv::Point2f& imgPos, bool inputInCorrectedImg = false) const;
 
-// No need to implement it from now
-//  /// Return the object position of the point at the intersection of the vision
-//  /// ray corresponding to imgPos and the plan defined by planEquation.
-//  ///
-//  /// If inputInCorrectedImg is enabled, then the distortion is not computed
-//  cv::Point3f getObjectPosFromImgAndPlan(const cv::Point2f & imgPos,
-//                                         cv::Point4f planEquation,
-//                                         bool inputInCorrectedImg = false) const;
+  // No need to implement it from now
+  //  /// Return the object position of the point at the intersection of the vision
+  //  /// ray corresponding to imgPos and the plan defined by planEquation.
+  //  ///
+  //  /// If inputInCorrectedImg is enabled, then the distortion is not computed
+  //  cv::Point3f getObjectPosFromImgAndPlan(const cv::Point2f & imgPos,
+  //                                         cv::Point4f planEquation,
+  //                                         bool inputInCorrectedImg = false) const;
 
-  void fromJson(const Json::Value & json_value,
-                const std::string & dir_name) override;
+  void fromJson(const Json::Value& json_value, const std::string& dir_name) override;
   Json::Value toJson() const override;
   std::string getClassName() const override;
-
 
 private:
   /// Number of columns in an image [px]
@@ -155,4 +152,4 @@ private:
   Eigen::Vector2d tangentialCoeffs;
 };
 
-}
+}  // namespace Leph

@@ -4,8 +4,8 @@
 #include "TimeSeries/Concept.hpp"
 #include "Model/HumanoidFixedModel.hpp"
 
-namespace Leph {
-
+namespace Leph
+{
 /**
  * HumanoidModelConcept
  *
@@ -42,43 +42,38 @@ namespace Leph {
  */
 class HumanoidModelConcept : public Concept
 {
-    public:
-        
-        /**
-         * Initialization with robot type
-         */
-        HumanoidModelConcept(RobotType type);
-        
-        /**
-         * Inherit Concept
-         */
-        virtual std::string name() const override;
-        virtual size_t inputSize() const override;
-        virtual size_t outputSize() const override;
+public:
+  /**
+   * Initialization with robot type
+   */
+  HumanoidModelConcept(RobotType type);
 
-        /**
-         * Inherit Optimize
-         */
-        virtual size_t parameterSize() const override;
-        virtual Leph::MetaParameter defaultParameter
-            (size_t index) const override;
+  /**
+   * Inherit Concept
+   */
+  virtual std::string name() const override;
+  virtual size_t inputSize() const override;
+  virtual size_t outputSize() const override;
 
-    protected: 
+  /**
+   * Inherit Optimize
+   */
+  virtual size_t parameterSize() const override;
+  virtual Leph::MetaParameter defaultParameter(size_t index) const override;
 
-        /**
-         * Inherit Concept
-         */
-        virtual bool doCompute(double time) override;
+protected:
+  /**
+   * Inherit Concept
+   */
+  virtual bool doCompute(double time) override;
 
-    private:
-
-        /**
-         * Internal Humanoid model
-         */
-        HumanoidFixedModel _model;
+private:
+  /**
+   * Internal Humanoid model
+   */
+  HumanoidFixedModel _model;
 };
 
-}
+}  // namespace Leph
 
 #endif
-

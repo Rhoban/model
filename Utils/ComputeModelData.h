@@ -4,17 +4,14 @@
 #include "Types/MatrixLabel.hpp"
 #include "Model/HumanoidModel.hpp"
 
-namespace Leph {
-
+namespace Leph
+{
 /**
  * Append data to given log in MatrixLabel
  * and compute Model data
  */
-void ComputeModelData(
-    MatrixLabel& logs, 
-    RobotType type = SigmabanModel);
+void ComputeModelData(MatrixLabel& logs, RobotType type = SigmabanModel);
 
-}
+}  // namespace Leph
 
 #endif
-

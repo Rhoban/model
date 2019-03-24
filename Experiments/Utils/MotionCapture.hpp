@@ -3,8 +3,8 @@
 
 #include <string>
 
-namespace Rhoban {
-
+namespace Rhoban
+{
 /**
  * MotionCapture
  *
@@ -13,135 +13,128 @@ namespace Rhoban {
  */
 class MotionCapture
 {
-    public:
-        
-        /**
-         * Motion capture result
-         */
-        struct CapturePosition {
-            bool isValid;
-            double x;
-            double y;
-            double z;
-            double azimuth;
-            double pitch;
-            double roll;
-        };
+public:
+  /**
+   * Motion capture result
+   */
+  struct CapturePosition
+  {
+    bool isValid;
+    double x;
+    double y;
+    double z;
+    double azimuth;
+    double pitch;
+    double roll;
+  };
 
-        /**
-         * Output
-         */
-        //Position and computed velocity
-        CapturePosition pos;
-        CapturePosition vel;
+  /**
+   * Output
+   */
+  // Position and computed velocity
+  CapturePosition pos;
+  CapturePosition vel;
 
-        /**
-         * Parameter
-         */
-        //Mobile state average coeficient
-        //for position and velocity
-        double averageCoefPos;
-        double averageCoefVel;
-        //Maximum number of tolerated invalid packet
-        unsigned int maxInvalidTick;
+  /**
+   * Parameter
+   */
+  // Mobile state average coeficient
+  // for position and velocity
+  double averageCoefPos;
+  double averageCoefVel;
+  // Maximum number of tolerated invalid packet
+  unsigned int maxInvalidTick;
 
-        /**
-         * Initialization
-         */
-        MotionCapture();
+  /**
+   * Initialization
+   */
+  MotionCapture();
 
-        /**
-         * Close open connection
-         */
-        ~MotionCapture();
+  /**
+   * Close open connection
+   */
+  ~MotionCapture();
 
-        /**
-         * Set and reset motion capture 
-         * server connection
-         */
-        void setCaptureStream(std::string captureStream);
+  /**
+   * Set and reset motion capture
+   * server connection
+   */
+  void setCaptureStream(std::string captureStream);
 
-        /**
-         * Receive motion capture packets and
-         * update output
-         */
-        void tick(double elapsed);
+  /**
+   * Receive motion capture packets and
+   * update output
+   */
+  void tick(double elapsed);
 
-    private:
+private:
+  /**
+   * ZMQ motion capture server url
+   */
+  std::string _captureStream;
 
-        /**
-         * ZMQ motion capture server url
-         */
-        std::string _captureStream;
+  /**
+   * ZMQ context and socket
+   */
+  void* _context;
+  void* _socket;
 
-        /**
-         * ZMQ context and socket
-         */
-        void* _context;
-        void* _socket;
+  /**
+   * Last valid capture position
+   * and velocity
+   */
+  unsigned int _countInvalidPos;
+  unsigned int _countInvalidVel;
 
-        /**
-         * Last valid capture position
-         * and velocity
-         */
-        unsigned int _countInvalidPos;
-        unsigned int _countInvalidVel;
+  /**
+   * Last valid position captured
+   */
+  CapturePosition _lastUpdated;
 
-        /**
-         * Last valid position captured
-         */
-        CapturePosition _lastUpdated;
+  /**
+   * Connection to motion capture service
+   */
+  void connection();
 
-        /**
-         * Connection to motion capture service
-         */
-        void connection();
+  /**
+   * Read given string packet and return
+   * converted Capture Position
+   */
+  CapturePosition parsePacket(unsigned char* buffer);
 
-        /**
-         * Read given string packet and return 
-         * converted Capture Position
-         */
-        CapturePosition parsePacket(unsigned char* buffer);
+  /**
+   * Read and return a (possibly non valid)
+   * Capture Position
+   */
+  CapturePosition readPacket();
 
-        /**
-         * Read and return a (possibly non valid)
-         * Capture Position
-         */
-        CapturePosition readPacket();
+  /**
+   * Read all available incomming packet
+   * and return the last one
+   */
+  CapturePosition readLastPacket();
 
-        /**
-         * Read all available incomming packet
-         * and return the last one
-         */
-        CapturePosition readLastPacket();
+  /**
+   * Deconnection from motion capture service
+   */
+  void deconnection();
 
-        /**
-         * Deconnection from motion capture service
-         */
-        void deconnection();
-        
-        /**
-         * Quaternion orientation to euler angles
-         * in degrees
-         */
-        void quat2Euler(double qx, double qy, double qz, double qw,
-            double& azimuth, double& pitch, double& roll) const;
+  /**
+   * Quaternion orientation to euler angles
+   * in degrees
+   */
+  void quat2Euler(double qx, double qy, double qz, double qw, double& azimuth, double& pitch, double& roll) const;
 
-        /**
-         * Compute and update state with mobile average
-         * and new values x, y, z, azimuth, pitch, roll
-         * and use given last valid state count and
-         * average coefficient alpha
-         */
-        void mobileAverage(
-            CapturePosition& state, 
-            double x, double y, double z, 
-            double azimuth, double pitch, double roll, 
-            unsigned int countInvalid,
-            double alpha);
+  /**
+   * Compute and update state with mobile average
+   * and new values x, y, z, azimuth, pitch, roll
+   * and use given last valid state count and
+   * average coefficient alpha
+   */
+  void mobileAverage(CapturePosition& state, double x, double y, double z, double azimuth, double pitch, double roll,
+                     unsigned int countInvalid, double alpha);
 };
 
-}
+}  // namespace Rhoban
 
 #endif
-

@@ -5,18 +5,19 @@
 using namespace std;
 using namespace Leph;
 
-string getAbsoluteTestFilePath() {
-    string filePath = __FILE__;
-    string currentDirPath = filePath.substr(0, filePath.rfind("/"));
-    return currentDirPath + "/../Data/cameraModelTest.json";
+string getAbsoluteTestFilePath()
+{
+  string filePath = __FILE__;
+  string currentDirPath = filePath.substr(0, filePath.rfind("/"));
+  return currentDirPath + "/../Data/cameraModelTest.json";
 }
 
-/// JsonLoader will be used for 
+/// JsonLoader will be used for
 TEST(jsonLoader, testSuccess)
 {
   CameraModel cameraModel;
   cameraModel.loadFile(getAbsoluteTestFilePath());
-  
+
   EXPECT_EQ(cameraModel.getImgWidth(), 800);
   EXPECT_EQ(cameraModel.getImgHeight(), 600);
   EXPECT_EQ(cameraModel.getCenterX(), 400);
@@ -43,15 +44,15 @@ TEST(getCameraMatrix, testSuccess)
   cameraModel.loadFile(getAbsoluteTestFilePath());
 
   cv::Mat cameraMatrix = cameraModel.getCameraMatrix();
-  EXPECT_FLOAT_EQ(cameraMatrix.at<double>(0,0), cameraModel.getFocalX());
-  EXPECT_FLOAT_EQ(cameraMatrix.at<double>(0,1), 0.0);
-  EXPECT_FLOAT_EQ(cameraMatrix.at<double>(0,2), cameraModel.getCenterX());
-  EXPECT_FLOAT_EQ(cameraMatrix.at<double>(1,0), 0.0);
-  EXPECT_FLOAT_EQ(cameraMatrix.at<double>(1,1), cameraModel.getFocalY());
-  EXPECT_FLOAT_EQ(cameraMatrix.at<double>(1,2), cameraModel.getCenterY());
-  EXPECT_FLOAT_EQ(cameraMatrix.at<double>(2,0), 0.0);
-  EXPECT_FLOAT_EQ(cameraMatrix.at<double>(2,1), 0.0);
-  EXPECT_FLOAT_EQ(cameraMatrix.at<double>(2,2), 1.0);
+  EXPECT_FLOAT_EQ(cameraMatrix.at<double>(0, 0), cameraModel.getFocalX());
+  EXPECT_FLOAT_EQ(cameraMatrix.at<double>(0, 1), 0.0);
+  EXPECT_FLOAT_EQ(cameraMatrix.at<double>(0, 2), cameraModel.getCenterX());
+  EXPECT_FLOAT_EQ(cameraMatrix.at<double>(1, 0), 0.0);
+  EXPECT_FLOAT_EQ(cameraMatrix.at<double>(1, 1), cameraModel.getFocalY());
+  EXPECT_FLOAT_EQ(cameraMatrix.at<double>(1, 2), cameraModel.getCenterY());
+  EXPECT_FLOAT_EQ(cameraMatrix.at<double>(2, 0), 0.0);
+  EXPECT_FLOAT_EQ(cameraMatrix.at<double>(2, 1), 0.0);
+  EXPECT_FLOAT_EQ(cameraMatrix.at<double>(2, 2), 1.0);
 }
 
 TEST(getDistortionCoeffs, testSuccess)
@@ -60,11 +61,11 @@ TEST(getDistortionCoeffs, testSuccess)
   cameraModel.loadFile(getAbsoluteTestFilePath());
 
   cv::Mat distortionCoeffs = cameraModel.getDistortionCoeffs();
-  EXPECT_FLOAT_EQ(distortionCoeffs.at<double>(0,0), 0.0);
-  EXPECT_FLOAT_EQ(distortionCoeffs.at<double>(1,0), 0.0);
-  EXPECT_FLOAT_EQ(distortionCoeffs.at<double>(2,0), 0.0);
-  EXPECT_FLOAT_EQ(distortionCoeffs.at<double>(3,0), 0.0);
-  EXPECT_FLOAT_EQ(distortionCoeffs.at<double>(4,0), 0.0);
+  EXPECT_FLOAT_EQ(distortionCoeffs.at<double>(0, 0), 0.0);
+  EXPECT_FLOAT_EQ(distortionCoeffs.at<double>(1, 0), 0.0);
+  EXPECT_FLOAT_EQ(distortionCoeffs.at<double>(2, 0), 0.0);
+  EXPECT_FLOAT_EQ(distortionCoeffs.at<double>(3, 0), 0.0);
+  EXPECT_FLOAT_EQ(distortionCoeffs.at<double>(4, 0), 0.0);
 }
 
 TEST(containsPixel, testSuccess)
@@ -72,15 +73,15 @@ TEST(containsPixel, testSuccess)
   CameraModel cameraModel;
   cameraModel.loadFile(getAbsoluteTestFilePath());
 
-  cv::Point2f in1(0,0);
-  cv::Point2f in2(600,500);
+  cv::Point2f in1(0, 0);
+  cv::Point2f in2(600, 500);
   cv::Point2f out1(-2, 50);
   cv::Point2f out2(2, -50);
   cv::Point2f out3(2, 602);
   cv::Point2f out4(802, 5);
   cv::Point2f out5(802, 602);
   cv::Point2f out6(-2, -20);
-  
+
   EXPECT_TRUE(cameraModel.containsPixel(in1));
   EXPECT_TRUE(cameraModel.containsPixel(in2));
   EXPECT_FALSE(cameraModel.containsPixel(out1));
@@ -104,7 +105,7 @@ TEST(toCorrectedImg, testSuccess)
   EXPECT_FLOAT_EQ(uncorrectedPos.x, correctedPos.x);
   EXPECT_FLOAT_EQ(uncorrectedPos.y, correctedPos.y);
   // Case 2: border, no deformation
-  uncorrectedPos = cv::Point2f(0,0);
+  uncorrectedPos = cv::Point2f(0, 0);
   correctedPos = cameraModel.toCorrectedImg(uncorrectedPos);
   EXPECT_NEAR(uncorrectedPos.x, correctedPos.x, 0.001);
   EXPECT_NEAR(uncorrectedPos.y, correctedPos.y, 0.001);
@@ -125,36 +126,42 @@ TEST(getImgFromObject, testSuccess)
   cv::Point2f imgPos;
 
   // 1. centered pixel should be at center of image
-  objectPos = cv::Point3f(0,0,1);
+  objectPos = cv::Point3f(0, 0, 1);
   imgPos = cameraModel.getImgFromObject(objectPos);
   EXPECT_FLOAT_EQ(imgPos.x, cameraModel.getCenterX());
   EXPECT_FLOAT_EQ(imgPos.y, cameraModel.getCenterY());
   // 2. zero in z throws runtime_error
-  try {
-    objectPos = cv::Point3f(0,0,0);
+  try
+  {
+    objectPos = cv::Point3f(0, 0, 0);
     imgPos = cameraModel.getImgFromObject(objectPos);
     EXPECT_TRUE(false);
-  } catch (const std::runtime_error & exc) {
+  }
+  catch (const std::runtime_error& exc)
+  {
     EXPECT_TRUE(true);
   }
   // 3. negative value in z throws runtime_error
-  try {
-    objectPos = cv::Point3f(0,0,-1);
+  try
+  {
+    objectPos = cv::Point3f(0, 0, -1);
     imgPos = cameraModel.getImgFromObject(objectPos);
     EXPECT_TRUE(false);
-  } catch (const std::runtime_error & exc) {
+  }
+  catch (const std::runtime_error& exc)
+  {
     EXPECT_TRUE(true);
   }
   // 4. Offset along y-axis
-  objectPos = cv::Point3f(0,cameraModel.getImgHeight()/4.,cameraModel.getFocalDist());
+  objectPos = cv::Point3f(0, cameraModel.getImgHeight() / 4., cameraModel.getFocalDist());
   imgPos = cameraModel.getImgFromObject(objectPos);
   EXPECT_FLOAT_EQ(imgPos.x, cameraModel.getCenterX());
-  EXPECT_FLOAT_EQ(imgPos.y, cameraModel.getCenterY() + cameraModel.getImgHeight()/4.);
+  EXPECT_FLOAT_EQ(imgPos.y, cameraModel.getCenterY() + cameraModel.getImgHeight() / 4.);
   // 5. Offset along y-axis same angle as 4. but further
-  objectPos = cv::Point3f(0,cameraModel.getImgHeight()/2.,cameraModel.getFocalDist() * 2);
+  objectPos = cv::Point3f(0, cameraModel.getImgHeight() / 2., cameraModel.getFocalDist() * 2);
   imgPos = cameraModel.getImgFromObject(objectPos);
   EXPECT_FLOAT_EQ(imgPos.x, cameraModel.getCenterX());
-  EXPECT_FLOAT_EQ(imgPos.y, cameraModel.getCenterY() + cameraModel.getImgHeight()/4.);
+  EXPECT_FLOAT_EQ(imgPos.y, cameraModel.getCenterY() + cameraModel.getImgHeight() / 4.);
 }
 
 TEST(getViewVectorFromImg, testSuccess)
@@ -165,7 +172,7 @@ TEST(getViewVectorFromImg, testSuccess)
   cv::Point2f imgPos;
   cv::Point3f viewVector;
   // Case 1: Center of img
-  imgPos = cv::Point2f(cameraModel.getCenterX(),cameraModel.getCenterY());
+  imgPos = cv::Point2f(cameraModel.getCenterX(), cameraModel.getCenterY());
   viewVector = cameraModel.getViewVectorFromImg(imgPos);
   EXPECT_FLOAT_EQ(viewVector.x, 0.0);
   EXPECT_FLOAT_EQ(viewVector.y, 0.0);
@@ -177,17 +184,18 @@ TEST(getViewVectorFromImg, testSuccess)
   viewVector = cameraModel.getViewVectorFromImg(imgPos);
   EXPECT_FLOAT_EQ(viewVector.x, 0.0);
   EXPECT_FLOAT_EQ(viewVector.y, 0.5);
-  EXPECT_FLOAT_EQ(viewVector.z, std::sqrt(3)/2);
+  EXPECT_FLOAT_EQ(viewVector.z, std::sqrt(3) / 2);
   // Case 3: Only x value
   imgPos.x = cameraModel.getCenterX() + cameraModel.getFocalX();
   imgPos.y = cameraModel.getCenterY();
   viewVector = cameraModel.getViewVectorFromImg(imgPos);
-  EXPECT_FLOAT_EQ(viewVector.x, std::sqrt(2)/2);
+  EXPECT_FLOAT_EQ(viewVector.x, std::sqrt(2) / 2);
   EXPECT_FLOAT_EQ(viewVector.y, 0.0);
-  EXPECT_FLOAT_EQ(viewVector.z, std::sqrt(2)/2);
+  EXPECT_FLOAT_EQ(viewVector.z, std::sqrt(2) / 2);
 }
 
-int main(int argc, char **argv) {
-    testing::InitGoogleTest(&argc, argv);
-    return RUN_ALL_TESTS();
+int main(int argc, char** argv)
+{
+  testing::InitGoogleTest(&argc, argv);
+  return RUN_ALL_TESTS();
 }

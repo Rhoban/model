@@ -4,8 +4,8 @@
 #include <vector>
 #include "Types/types.h"
 
-namespace Leph {
-
+namespace Leph
+{
 /**
  * MedianLinearRegression
  *
@@ -16,42 +16,39 @@ namespace Leph {
  */
 class MedianLinearRegression
 {
-    public:
-        
-        /**
-         * Clear all registered data
-         */
-        void clear();
+public:
+  /**
+   * Clear all registered data
+   */
+  void clear();
 
-        /**
-         * Return the number of registered data points
-         * and input vector dimension
-         */
-        size_t size() const;
-        size_t dimension() const;
+  /**
+   * Return the number of registered data points
+   * and input vector dimension
+   */
+  size_t size() const;
+  size_t dimension() const;
 
-        /**
-         * Add given data point input vector
-         * and output scalar
-         */
-        void add(const Vector& input, double output);
-        
-        /**
-         * TODO
-         */
-        Vector regression();
+  /**
+   * Add given data point input vector
+   * and output scalar
+   */
+  void add(const Vector& input, double output);
 
-    private:
+  /**
+   * TODO
+   */
+  Vector regression();
 
-        /**
-         * Registered points container
-         * inputs and outputs vectors and values
-         */
-        std::vector<Vector> _inputs;
-        std::vector<double> _outputs;
+private:
+  /**
+   * Registered points container
+   * inputs and outputs vectors and values
+   */
+  std::vector<Vector> _inputs;
+  std::vector<double> _outputs;
 };
 
-}
+}  // namespace Leph
 
 #endif
-

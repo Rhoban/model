@@ -3,12 +3,11 @@
 
 #include <Eigen/Dense>
 
-namespace Leph {
-
+namespace Leph
+{
 typedef Eigen::VectorXd Vector;
 typedef Eigen::MatrixXd Matrix;
 
-}
+}  // namespace Leph
 
 #endif
-

@@ -5,18 +5,15 @@
 #include "Model/HumanoidFixedModel.hpp"
 #include "TrajectoryGeneration/TrajectoryUtils.h"
 
-namespace Leph {
-
+namespace Leph
+{
 /**
  * Plot and Display the given Trajectories
  * spline container.
  */
-void TrajectoriesDisplay(
-    const Trajectories& traj, 
-    RobotType type = SigmabanModel,
-    const std::string& modelParamsPath = "");
+void TrajectoriesDisplay(const Trajectories& traj, RobotType type = SigmabanModel,
+                         const std::string& modelParamsPath = "");
 
-}
+}  // namespace Leph
 
 #endif
-

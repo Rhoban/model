@@ -4,69 +4,56 @@
 #include <iostream>
 #include <Eigen/Dense>
 
-namespace Leph {
-
+namespace Leph
+{
 /**
- * Write the given Eigen Vector 
+ * Write the given Eigen Vector
  * into given output stream
  */
-void WriteEigenVectorToStream(
-    std::ostream& os, 
-    const Eigen::VectorXd& vect);
+void WriteEigenVectorToStream(std::ostream& os, const Eigen::VectorXd& vect);
 
 /**
- * Write the given Eigen Vector 
+ * Write the given Eigen Vector
  * into given filename
  */
-void WriteEigenVector(
-    const std::string& filename, 
-    const Eigen::VectorXd& vect);
+void WriteEigenVector(const std::string& filename, const Eigen::VectorXd& vect);
 
 /**
- * Read from given input stream 
+ * Read from given input stream
  * an Eigen Vector and return it
  */
-Eigen::VectorXd ReadEigenVectorFromStream(
-    std::istream& is);
+Eigen::VectorXd ReadEigenVectorFromStream(std::istream& is);
 
 /**
- * Read from given filename an 
+ * Read from given filename an
  * Eigen Vector and return it
  */
-Eigen::VectorXd ReadEigenVector(
-    const std::string& filename);
+Eigen::VectorXd ReadEigenVector(const std::string& filename);
 
 /**
- * Write the given Eigen Matrix 
+ * Write the given Eigen Matrix
  * into given output stream
  */
-void WriteEigenMatrixToStream(
-    std::ostream& os, 
-    const Eigen::MatrixXd& mat);
+void WriteEigenMatrixToStream(std::ostream& os, const Eigen::MatrixXd& mat);
 
 /**
- * Write the given Eigen Matrix 
+ * Write the given Eigen Matrix
  * into given filename
  */
-void WriteEigenMatrix(
-    const std::string& filename, 
-    const Eigen::MatrixXd& mat);
+void WriteEigenMatrix(const std::string& filename, const Eigen::MatrixXd& mat);
 
 /**
- * Read from given input stream 
+ * Read from given input stream
  * an Eigen Matrix and return it
  */
-Eigen::MatrixXd ReadEigenMatrixFromStream(
-    std::istream& is);
+Eigen::MatrixXd ReadEigenMatrixFromStream(std::istream& is);
 
 /**
- * Read from given filename an 
+ * Read from given filename an
  * Eigen Matrix and return it
  */
-Eigen::MatrixXd ReadEigenMatrix(
-    const std::string& filename);
+Eigen::MatrixXd ReadEigenMatrix(const std::string& filename);
 
-}
+}  // namespace Leph
 
 #endif
-

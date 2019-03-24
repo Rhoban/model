@@ -4,44 +4,34 @@
 #include "TrajectoryGeneration/TrajectoryGeneration.hpp"
 #include "TrajectoryGeneration/TrajectoryParameters.hpp"
 
-namespace Leph {
-
+namespace Leph
+{
 /**
  * TrajStaticPose
  *
- * Template for static 
+ * Template for static
  * single support pose
  */
 class TrajStaticPose
 {
-    public:
+public:
+  static void initializeParameters(TrajectoryParameters& trajParams);
 
-        static void initializeParameters(
-            TrajectoryParameters& trajParams);
+  static TrajectoryGeneration::GenerationFunc funcGeneration(const TrajectoryParameters& trajParams);
 
-        static TrajectoryGeneration::GenerationFunc funcGeneration(
-            const TrajectoryParameters& trajParams);
+  static TrajectoryGeneration::CheckParamsFunc funcCheckParams(const TrajectoryParameters& trajParams);
 
-        static TrajectoryGeneration::CheckParamsFunc funcCheckParams(
-            const TrajectoryParameters& trajParams);
+  static TrajectoryGeneration::CheckStateFunc funcCheckState(const TrajectoryParameters& trajParams);
 
-        static TrajectoryGeneration::CheckStateFunc funcCheckState(
-            const TrajectoryParameters& trajParams);
+  static TrajectoryGeneration::CheckDOFFunc funcCheckDOF(const TrajectoryParameters& trajParams);
 
-        static TrajectoryGeneration::CheckDOFFunc funcCheckDOF(
-            const TrajectoryParameters& trajParams);
+  static TrajectoryGeneration::ScoreFunc funcScore(const TrajectoryParameters& trajParams);
 
-        static TrajectoryGeneration::ScoreFunc funcScore(
-            const TrajectoryParameters& trajParams);
+  static TrajectoryGeneration::EndScoreFunc funcEndScore(const TrajectoryParameters& trajParams);
 
-        static TrajectoryGeneration::EndScoreFunc funcEndScore(
-            const TrajectoryParameters& trajParams);
-        
-        static TrajectoryGeneration::SaveFunc funcSave(
-            const TrajectoryParameters& trajParams);
+  static TrajectoryGeneration::SaveFunc funcSave(const TrajectoryParameters& trajParams);
 };
 
-}
+}  // namespace Leph
 
 #endif
-

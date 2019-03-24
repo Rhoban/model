@@ -4,11 +4,11 @@
 #include "TrajectoryGeneration/TrajectoryParameters.hpp"
 #include "TrajectoryGeneration/TrajectoryGeneration.hpp"
 
-namespace Leph {
-
+namespace Leph
+{
 /**
  * Return default TrajectoryParameters instance.
- * Definition of CMA-ES and static single 
+ * Definition of CMA-ES and static single
  * and double support parameters.
  */
 TrajectoryParameters DefaultTrajParameters();
@@ -17,24 +17,20 @@ TrajectoryParameters DefaultTrajParameters();
  * Return a standard fitness function from
  * given trajectory parameters
  */
-TrajectoryGeneration::ScoreFunc DefaultFuncScore(
-    const TrajectoryParameters& trajParams);
+TrajectoryGeneration::ScoreFunc DefaultFuncScore(const TrajectoryParameters& trajParams);
 
 /**
  * Return a standard end fitness function from
  * given trajectory parameters
  */
-TrajectoryGeneration::EndScoreFunc DefaultFuncEndScore(
-    const TrajectoryParameters& trajParams);
+TrajectoryGeneration::EndScoreFunc DefaultFuncEndScore(const TrajectoryParameters& trajParams);
 
 /**
  * Return a standard saving function for
  * trajectories and parameters
  */
-TrajectoryGeneration::SaveFunc DefaultFuncSave(
-    const TrajectoryParameters& trajParams);
+TrajectoryGeneration::SaveFunc DefaultFuncSave(const TrajectoryParameters& trajParams);
 
-}
+}  // namespace Leph
 
 #endif
-

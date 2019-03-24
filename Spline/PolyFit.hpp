@@ -5,8 +5,8 @@
 #include "Spline/Polynom.hpp"
 #include "LinearRegression/SimpleLinearRegression.hpp"
 
-namespace Leph {
-
+namespace Leph
+{
 /**
  * PolyFit
  *
@@ -16,46 +16,43 @@ namespace Leph {
  */
 class PolyFit
 {
-    public:
+public:
+  /**
+   * Initialization with polynom
+   * fitting degree
+   */
+  PolyFit(unsigned int degree);
 
-        /**
-         * Initialization with polynom 
-         * fitting degree
-         */
-        PolyFit(unsigned int degree);
+  /**
+   * Add a data point at given
+   * time abscisse
+   */
+  void add(double t, double val);
 
-        /**
-         * Add a data point at given 
-         * time abscisse
-         */
-        void add(double t, double val);
+  /**
+   * Compute and return the fitted
+   * polynom in least square sense
+   */
+  Polynom fitting();
 
-        /**
-         * Compute and return the fitted 
-         * polynom in least square sense
-         */
-        Polynom fitting();
+  /**
+   * Access to internal Linear Regression
+   * instance
+   */
+  const SimpleLinearRegression& regression() const;
 
-        /**
-         * Access to internal Linear Regression
-         * instance
-         */
-        const SimpleLinearRegression& regression() const;
+private:
+  /**
+   * Asked fitting degree
+   */
+  unsigned int _degree;
 
-    private:
-
-        /**
-         * Asked fitting degree
-         */
-        unsigned int _degree;
-
-        /**
-         * Internal Linear Regression instance
-         */
-        SimpleLinearRegression _regression;
+  /**
+   * Internal Linear Regression instance
+   */
+  SimpleLinearRegression _regression;
 };
 
-}
+}  // namespace Leph
 
 #endif
-

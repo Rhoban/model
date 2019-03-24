@@ -50,85 +50,94 @@
 
 // Users should NOT set these; only this header should set them.
 #ifdef DRAKE_ASSERT_IS_ARMED
-# error Unexpected DRAKE_ASSERT_IS_ARMED defined.
+#error Unexpected DRAKE_ASSERT_IS_ARMED defined.
 #endif
 #ifdef DRAKE_ASSERT_IS_DISARMED
-# error Unexpected DRAKE_ASSERT_IS_DISARMED defined.
+#error Unexpected DRAKE_ASSERT_IS_DISARMED defined.
 #endif
 
 // Decide whether Drake assertions are enabled.
 #if defined(DRAKE_ENABLE_ASSERTS) && defined(DRAKE_DISABLE_ASSERTS)
-# error Conflicting assertion toggles.
+#error Conflicting assertion toggles.
 #elif defined(DRAKE_ENABLE_ASSERTS)
-# define DRAKE_ASSERT_IS_ARMED
+#define DRAKE_ASSERT_IS_ARMED
 #elif defined(DRAKE_DISABLE_ASSERTS) || defined(NDEBUG)
-# define DRAKE_ASSERT_IS_DISARMED
+#define DRAKE_ASSERT_IS_DISARMED
 #else
-# define DRAKE_ASSERT_IS_ARMED
+#define DRAKE_ASSERT_IS_ARMED
 #endif
 
-namespace Drake {
-namespace detail {
+namespace Drake
+{
+namespace detail
+{
 // Abort the program with an error message.
 __attribute__((noreturn)) /* gcc is ok with [[noreturn]]; clang is not. */
-inline void Abort(const char* condition, const char* func, const char* file, int line) {
-    std::cout << "Drake LCP Abort: " 
-        << condition << " " 
-        << func << " " 
-        << file << " " 
-        << line << std::endl;
+inline void
+Abort(const char* condition, const char* func, const char* file, int line)
+{
+  std::cout << "Drake LCP Abort: " << condition << " " << func << " " << file << " " << line << std::endl;
 }
 }  // namespace detail
-namespace assert {
+namespace assert
+{
 // Allows for specialization of how to bool-convert Conditions used in
 // assertions, in case they are not intrinsically convertible.  See
 // symbolic_formula.h for an example use.  This is a public interface to
 // extend; it is intended to be specialized by unusual Scalar types that
 // require special handling.
 template <typename Condition>
-struct ConditionTraits {
+struct ConditionTraits
+{
   static constexpr bool is_valid = std::is_convertible<Condition, bool>::value;
-  static bool Evaluate(const Condition& value) {
+  static bool Evaluate(const Condition& value)
+  {
     return value;
   }
 };
 }  // namespace assert
 }  // namespace Drake
 
-#define DRAKE_ABORT()                                           \
-  ::Drake::detail::Abort(nullptr, __func__, __FILE__, __LINE__)
+#define DRAKE_ABORT() ::Drake::detail::Abort(nullptr, __func__, __FILE__, __LINE__)
 
-#define DRAKE_DEMAND(condition)                                              \
-  do {                                                                       \
-    typedef ::Drake::assert::ConditionTraits<                                \
-        typename std::remove_cv<decltype(condition)>::type> Trait;           \
-    static_assert(Trait::is_valid, "Condition should be bool-convertible."); \
-    if (!Trait::Evaluate(condition)) {                                       \
-      ::Drake::detail::Abort(#condition, __func__, __FILE__, __LINE__);      \
-    }                                                                        \
+#define DRAKE_DEMAND(condition)                                                                                        \
+  do                                                                                                                   \
+  {                                                                                                                    \
+    typedef ::Drake::assert::ConditionTraits<typename std::remove_cv<decltype(condition)>::type> Trait;                \
+    static_assert(Trait::is_valid, "Condition should be bool-convertible.");                                           \
+    if (!Trait::Evaluate(condition))                                                                                   \
+    {                                                                                                                  \
+      ::Drake::detail::Abort(#condition, __func__, __FILE__, __LINE__);                                                \
+    }                                                                                                                  \
   } while (0)
 
-#define DRAKE_ABORT_MSG(msg)                                    \
-  ::Drake::detail::Abort(msg, __func__, __FILE__, __LINE__)
+#define DRAKE_ABORT_MSG(msg) ::Drake::detail::Abort(msg, __func__, __FILE__, __LINE__)
 
 #ifdef DRAKE_ASSERT_IS_ARMED
-// Assertions are enabled.
-# define DRAKE_ASSERT(condition) DRAKE_DEMAND(condition)
-# define DRAKE_ASSERT_VOID(expression) do {                     \
-    static_assert(                                              \
-        std::is_convertible<decltype(expression), void>::value, \
-        "Expression should be void.");                          \
-    expression;                                                 \
+   // Assertions are enabled.
+#define DRAKE_ASSERT(condition) DRAKE_DEMAND(condition)
+#define DRAKE_ASSERT_VOID(expression)                                                                                  \
+  do                                                                                                                   \
+  {                                                                                                                    \
+    static_assert(std::is_convertible<decltype(expression), void>::value, "Expression should be void.");               \
+    expression;                                                                                                        \
   } while (0)
 #else
 // Assertions are disabled, so just typecheck the expression.
-# define DRAKE_ASSERT(condition) static_assert(                        \
-    ::Drake::assert::ConditionTraits<                                  \
-        typename std::remove_cv<decltype(condition)>::type>::is_valid, \
-    "Condition should be bool-convertible.");
-# define DRAKE_ASSERT_VOID(expression) static_assert(           \
-    std::is_convertible<decltype(expression), void>::value,     \
-    "Expression should be void.")
+#define DRAKE_ASSERT(condition)                                                                                        \
+  static_assert(::Drake::assert::ConditionTraits<typename std::remove_cv<decltype(condition)>::type>::is_valid, "Cond" \
+                                                                                                                "itio" \
+                                                                                                                "n "   \
+                                                                                                                "shou" \
+                                                                                                                "ld "  \
+                                                                                                                "be "  \
+                                                                                                                "bool" \
+                                                                                                                "-con" \
+                                                                                                                "vert" \
+                                                                                                                "ible" \
+                                                                                                                ".");
+#define DRAKE_ASSERT_VOID(expression)                                                                                  \
+  static_assert(std::is_convertible<decltype(expression), void>::value, "Expression should be void.")
 #endif
 
 #endif  // DRAKE_DOXYGEN_CXX

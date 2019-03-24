@@ -4,8 +4,8 @@
 #include <random>
 #include <Eigen/Dense>
 
-namespace Leph {
-
+namespace Leph
+{
 /**
  * OdometryNoiseModel
  *
@@ -14,94 +14,89 @@ namespace Leph {
  */
 class OdometryNoiseModel
 {
-    public:
-        
-        /**
-         * Different noise model types.
-         */
-        enum Type {
-            NoiseDisable = 1,
-            NoiseConstant = 2,
-            NoiseProportional = 3,
-            NoiseLinearSimple = 4,
-            NoiseLinearFull = 5,
-        };
-        
-        /**
-         * Initialization with
-         * noise model type.
-         * Parameters default values 
-         * and bounds configuration.
-         */
-        OdometryNoiseModel(Type type);
-        
-        /**
-         * Return current model type
-         */
-        Type getType() const;
-        
-        /**
-         * Return current or default
-         * parameters for current model type.
-         */
-        const Eigen::VectorXd& getParameters() const;
+public:
+  /**
+   * Different noise model types.
+   */
+  enum Type
+  {
+    NoiseDisable = 1,
+    NoiseConstant = 2,
+    NoiseProportional = 3,
+    NoiseLinearSimple = 4,
+    NoiseLinearFull = 5,
+  };
 
-        /**
-         * Assign given parameters. 
-         * If given parameters does not
-         * comply with min or max bounds, 
-         * a positive distance (for fitness scoring)
-         * from given parameters is given.
-         * The internal parameters are not updated.
-         * Else, the parameters are assigned
-         * and zero is returned.
-         */
-        double setParameters(
-            const Eigen::VectorXd& params);
+  /**
+   * Initialization with
+   * noise model type.
+   * Parameters default values
+   * and bounds configuration.
+   */
+  OdometryNoiseModel(Type type);
 
-        std::vector<std::string> getParametersNames() const;
+  /**
+   * Return current model type
+   */
+  Type getType() const;
 
-        /**
-         * Return parameter normalization 
-         * coefficients
-         */
-        const Eigen::VectorXd& getNormalization() const;
+  /**
+   * Return current or default
+   * parameters for current model type.
+   */
+  const Eigen::VectorXd& getParameters() const;
 
-        /**
-         * Generate a gaussian noise over 
-         * [dX,dY,dTheta] given displacement 
-         * from given random engine and 
-         * using current model parameters.
-         */
-        Eigen::Vector3d noiseGeneration(
-            const Eigen::Vector3d& diff,
-            std::default_random_engine& engine) const;
-        
-        /**
-         * Print current parameters on
-         * standart output
-         */
-        void printParameters() const;
+  /**
+   * Assign given parameters.
+   * If given parameters does not
+   * comply with min or max bounds,
+   * a positive distance (for fitness scoring)
+   * from given parameters is given.
+   * The internal parameters are not updated.
+   * Else, the parameters are assigned
+   * and zero is returned.
+   */
+  double setParameters(const Eigen::VectorXd& params);
 
-    private:
-        
-        /**
-         * Current model type
-         */
-        Type _type;
+  std::vector<std::string> getParametersNames() const;
 
-        /**
-         * Displacement model parameters
-         */
-        Eigen::VectorXd _params;
+  /**
+   * Return parameter normalization
+   * coefficients
+   */
+  const Eigen::VectorXd& getNormalization() const;
 
-        /**
-         * Maximum parameter bounds
-         */
-        Eigen::VectorXd _maxBounds;
+  /**
+   * Generate a gaussian noise over
+   * [dX,dY,dTheta] given displacement
+   * from given random engine and
+   * using current model parameters.
+   */
+  Eigen::Vector3d noiseGeneration(const Eigen::Vector3d& diff, std::default_random_engine& engine) const;
+
+  /**
+   * Print current parameters on
+   * standart output
+   */
+  void printParameters() const;
+
+private:
+  /**
+   * Current model type
+   */
+  Type _type;
+
+  /**
+   * Displacement model parameters
+   */
+  Eigen::VectorXd _params;
+
+  /**
+   * Maximum parameter bounds
+   */
+  Eigen::VectorXd _maxBounds;
 };
 
-}
+}  // namespace Leph
 
 #endif
-

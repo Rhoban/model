@@ -2,8 +2,8 @@
 // (https://github.com/edrumwri).
 
 // Taken from Drake (https://github.com/RobotLocomotion/drake)
-// (http://drake.mit.edu/). 
-// Robot Locomotion Group at the MIT 
+// (http://drake.mit.edu/).
+// Robot Locomotion Group at the MIT
 // Computer Science and Artificial Intelligence Lab (CSAIL)
 
 #pragma once
@@ -16,10 +16,11 @@
 
 #include "LCPMobyDrake/drake_copyable.h"
 
-namespace Drake {
-
-class MobyLCPSolver {
- public:
+namespace Drake
+{
+class MobyLCPSolver
+{
+public:
   DRAKE_NO_COPY_NO_MOVE_NO_ASSIGN(MobyLCPSolver)
 
   MobyLCPSolver();
@@ -28,36 +29,27 @@ class MobyLCPSolver {
 
   void SetLoggingEnabled(bool enabled);
 
-  bool SolveLcpFast(const Eigen::MatrixXd& M, const Eigen::VectorXd& q,
-                    Eigen::VectorXd* z, double zero_tol = -1.0) const;
-  bool SolveLcpFastRegularized(const Eigen::MatrixXd& M,
-                               const Eigen::VectorXd& q, Eigen::VectorXd* z,
-                               int min_exp = -20, unsigned step_exp = 4,
-                               int max_exp = 20, double zero_tol = -1.0) const;
-  bool SolveLcpLemke(const Eigen::MatrixXd& M, const Eigen::VectorXd& q,
-                     Eigen::VectorXd* z, double piv_tol = -1.0,
+  bool SolveLcpFast(const Eigen::MatrixXd& M, const Eigen::VectorXd& q, Eigen::VectorXd* z,
+                    double zero_tol = -1.0) const;
+  bool SolveLcpFastRegularized(const Eigen::MatrixXd& M, const Eigen::VectorXd& q, Eigen::VectorXd* z,
+                               int min_exp = -20, unsigned step_exp = 4, int max_exp = 20,
+                               double zero_tol = -1.0) const;
+  bool SolveLcpLemke(const Eigen::MatrixXd& M, const Eigen::VectorXd& q, Eigen::VectorXd* z, double piv_tol = -1.0,
                      double zero_tol = -1.0) const;
-  bool SolveLcpLemkeRegularized(const Eigen::MatrixXd& M,
-                                const Eigen::VectorXd& q, Eigen::VectorXd* z,
-                                int min_exp = -20, unsigned step_exp = 1,
-                                int max_exp = 1, double piv_tol = -1.0,
+  bool SolveLcpLemkeRegularized(const Eigen::MatrixXd& M, const Eigen::VectorXd& q, Eigen::VectorXd* z,
+                                int min_exp = -20, unsigned step_exp = 1, int max_exp = 1, double piv_tol = -1.0,
                                 double zero_tol = -1.0) const;
-  bool SolveLcpLemke(const Eigen::SparseMatrix<double>& M,
-                     const Eigen::VectorXd& q, Eigen::VectorXd* z,
+  bool SolveLcpLemke(const Eigen::SparseMatrix<double>& M, const Eigen::VectorXd& q, Eigen::VectorXd* z,
                      double piv_tol = -1.0, double zero_tol = -1.0) const;
-  bool SolveLcpLemkeRegularized(const Eigen::SparseMatrix<double>& M,
-                                const Eigen::VectorXd& q, Eigen::VectorXd* z,
-                                int min_exp = -20, unsigned step_exp = 4,
-                                int max_exp = 20, double piv_tol = -1.0,
+  bool SolveLcpLemkeRegularized(const Eigen::SparseMatrix<double>& M, const Eigen::VectorXd& q, Eigen::VectorXd* z,
+                                int min_exp = -20, unsigned step_exp = 4, int max_exp = 20, double piv_tol = -1.0,
                                 double zero_tol = -1.0) const;
 
- private:
+private:
   void ClearIndexVectors() const;
-  bool CheckLemkeTrivial(int n, double zero_tol, const Eigen::VectorXd& q,
-                         Eigen::VectorXd* z) const;
+  bool CheckLemkeTrivial(int n, double zero_tol, const Eigen::VectorXd& q, Eigen::VectorXd* z) const;
   template <typename MatrixType>
-  void FinishLemkeSolution(const MatrixType& M, const Eigen::VectorXd& q,
-                           Eigen::VectorXd* z) const;
+  void FinishLemkeSolution(const MatrixType& M, const Eigen::VectorXd& q, Eigen::VectorXd* z) const;
 
   // TODO(sammy-tri) replace this with a proper logging hookup
   std::ostream& Log() const;
@@ -92,4 +84,3 @@ class MobyLCPSolver {
 };
 
 }  // end namespace Drake
-

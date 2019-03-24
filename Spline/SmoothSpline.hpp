@@ -3,8 +3,8 @@
 
 #include "Spline/Spline.hpp"
 
-namespace Leph {
-
+namespace Leph
+{
 /**
  * SmoothSpline
  *
@@ -13,61 +13,55 @@ namespace Leph {
  */
 class SmoothSpline : public Spline
 {
-    public:
-        
-        /**
-         * Simple point struture
-         */
-        struct Point {
-            double time;
-            double position;
-            double velocity;
-            double acceleration;
-        };
+public:
+  /**
+   * Simple point struture
+   */
+  struct Point
+  {
+    double time;
+    double position;
+    double velocity;
+    double acceleration;
+  };
 
-        /**
-         * Add a new point with its time, position value,
-         * velocity and acceleration
-         */
-        void addPoint(double time, double position, 
-            double velocity = 0.0, double acceleration = 0.0);
-        
-        /**
-         * Access to points container
-         */
-        const std::vector<Point>& points() const;
-        std::vector<Point>& points();
-        
-        /**
-         * Recompute splines interpolation model
-         */
-        void computeSplines();
-    
-    protected:
+  /**
+   * Add a new point with its time, position value,
+   * velocity and acceleration
+   */
+  void addPoint(double time, double position, double velocity = 0.0, double acceleration = 0.0);
 
-        /**
-         * Inherit
-         * Load Points
-         */
-        virtual void importCallBack() override;    
-        
-    private:
+  /**
+   * Access to points container
+   */
+  const std::vector<Point>& points() const;
+  std::vector<Point>& points();
 
-        /**
-         * Points container
-         */
-        std::vector<Point> _points;
-        
-        /**
-         * Fit a polynom between 0 and t with given
-         * pos, vel and acc initial and final conditions
-         */
-        Polynom polynomFit(double t, 
-            double pos1, double vel1, double acc1,
-            double pos2, double vel2, double acc2) const;
+  /**
+   * Recompute splines interpolation model
+   */
+  void computeSplines();
+
+protected:
+  /**
+   * Inherit
+   * Load Points
+   */
+  virtual void importCallBack() override;
+
+private:
+  /**
+   * Points container
+   */
+  std::vector<Point> _points;
+
+  /**
+   * Fit a polynom between 0 and t with given
+   * pos, vel and acc initial and final conditions
+   */
+  Polynom polynomFit(double t, double pos1, double vel1, double acc1, double pos2, double vel2, double acc2) const;
 };
 
-}
+}  // namespace Leph
 
 #endif
-
