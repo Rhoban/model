@@ -4,6 +4,7 @@
 #include <map>
 #include <string>
 #include <sstream>
+#include "Model/HumanoidModel.hpp"
 #include "Model/HumanoidFixedModel.hpp"
 #include "Viewer/ModelViewer.hpp"
 #include "Viewer/ModelDraw.hpp"
@@ -164,24 +165,24 @@ int main(int argc, char** argv)
       walkEnable = val;
     }
   });
-  clientSub.setHandlerStr([&mutexVar, &stateApproach, &stateRoboCup,
-                           &stateLowlevel](const std::string name, int64_t timestamp, std::string val) {
-    if (name == "moves/approach/state")
-    {
-      std::lock_guard<std::mutex> lock(mutexVar);
-      stateApproach = val;
-    }
-    if (name == "moves/robocup/state")
-    {
-      std::lock_guard<std::mutex> lock(mutexVar);
-      stateRoboCup = val;
-    }
-    if (name == "model/lowlevel_state")
-    {
-      std::lock_guard<std::mutex> lock(mutexVar);
-      stateLowlevel = val;
-    }
-  });
+  // clientSub.setHandlerStr([&mutexVar, &stateApproach, &stateRoboCup,
+  //                          &stateLowlevel](const std::string name, int64_t timestamp, std::string val) {
+  //   if (name == "moves/approach/state")
+  //   {
+  //     std::lock_guard<std::mutex> lock(mutexVar);
+  //     stateApproach = val;
+  //   }
+  //   if (name == "moves/robocup/state")
+  //   {
+  //     std::lock_guard<std::mutex> lock(mutexVar);
+  //     stateRoboCup = val;
+  //   }
+  //   if (name == "model/lowlevel_state")
+  //   {
+  //     std::lock_guard<std::mutex> lock(mutexVar);
+  //     stateLowlevel = val;
+  //   }
+  // });
 
   // Fetch all requested value
   for (auto& it : streamedValues)
@@ -190,7 +191,7 @@ int main(int argc, char** argv)
   }
   model.setSupportFoot((Leph::HumanoidFixedModel::SupportFoot)clientReq.getInt(prefix + "support_foot"));
   walkEnable = clientReq.getBool("moves/walk/walkEnable");
-  stateApproach = clientReq.getStr("moves/approach/state");
+  // stateApproach = clientReq.getStr("moves/approach/state");
   stateRoboCup = clientReq.getStr("moves/robocup/state");
   stateLowlevel = clientReq.getStr("model/lowlevel_state");
 
@@ -201,7 +202,7 @@ int main(int argc, char** argv)
   }
   clientReq.enableStreamingValue(prefix + "support_foot");
   clientReq.enableStreamingValue("moves/walk/walkEnable");
-  clientReq.enableStreamingValue("moves/approach/state");
+  // clientReq.enableStreamingValue("moves/approach/state");
   clientReq.enableStreamingValue("moves/robocup/state");
   clientReq.enableStreamingValue("model/lowlevel_state");
 
@@ -262,9 +263,9 @@ int main(int argc, char** argv)
     Eigen::Vector3d com = model.get().centerOfMass("origin");
     com.z() = 0.0;
     viewer.addTrackedPoint(com, Leph::ModelViewer::Red);
-    Leph::CameraParameters camParams = { 74 * 3.14 / 180.0, 99 * 3.14 / 180.0 };
+    // Leph::CameraParameters camParams = { 74 * 3.14 / 180.0, 99 * 3.14 / 180.0 };
     Leph::ModelDraw(model.get(), viewer);
-    Leph::CameraDraw(camParams, model.get(), viewer);
+    // Leph::CameraDraw(camParams, model.get(), viewer);
   }
   // Disabling value streaming
   for (auto& it : streamedValues)
@@ -273,7 +274,7 @@ int main(int argc, char** argv)
   }
   clientReq.disableStreamingValue(prefix + "support_foot");
   clientReq.disableStreamingValue("moves/walk/walkEnable");
-  clientReq.disableStreamingValue("moves/approach/state");
+  // clientReq.disableStreamingValue("moves/approach/state");
   clientReq.disableStreamingValue("moves/robocup/state");
   clientReq.disableStreamingValue("model/lowlevel_state");
 

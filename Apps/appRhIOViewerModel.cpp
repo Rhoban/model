@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <mutex>
+#include "Model/HumanoidModel.hpp"
 #include "Model/HumanoidFixedPressureModel.hpp"
 #include "Viewer/ModelViewer.hpp"
 #include "Viewer/ModelDraw.hpp"
@@ -285,9 +286,9 @@ int main(int argc, char** argv)
     Eigen::Vector3d com = model.get().centerOfMass("origin");
     com.z() = 0.0;
     viewer.addTrackedPoint(com, Leph::ModelViewer::Red);
-    Leph::CameraParameters camParams = { 74 * 3.14 / 180.0, 99 * 3.14 / 180.0 };
+    // Leph::CameraParameters camParams = { 74 * 3.14 / 180.0, 99 * 3.14 / 180.0 };
     Leph::ModelDraw(model.get(), viewer);
-    Leph::CameraDraw(camParams, model.get(), viewer);
+    // Leph::CameraDraw(camParams, model.get(), viewer);
   }
   // Disabling value streaming
   if (prefix == "")
