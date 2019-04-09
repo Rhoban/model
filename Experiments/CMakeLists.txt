@@ -42,8 +42,8 @@ set(ZMQ_DIRECTORY
     ${RHOBAN_UTILS_DIRECTORY}/zmq3.2
     CACHE STRING "ZMQ library directory")
 
-#Enable C++11
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+#Enable C++17
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
    
 # Header includes
 include_directories(
