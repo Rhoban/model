@@ -92,7 +92,6 @@ set(SOURCES_FILES
     Utils/FileEigen.cpp
     Utils/FileModelParameters.cpp
     Utils/GaussianDistribution.cpp
-    Ncurses/InterfaceCLI.cpp
     Model/CameraModel.cpp
     Model/Model.cpp
     Model/HumanoidModel.cpp
