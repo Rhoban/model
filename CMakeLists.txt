@@ -110,7 +110,6 @@ set(SOURCES_FILES
     Odometry/OdometryDisplacementModel.cpp
     Odometry/OdometryNoiseModel.cpp
     Odometry/OdometrySequence.cpp
-    StaticWalk/StaticWalk.cpp
     Spline/Polynom.cpp
     Spline/Spline.cpp
     Spline/SmoothSpline.cpp
