@@ -74,18 +74,6 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
 
 #Sources files
 set(SOURCES_FILES
-    CartWalk/CartWalk.cpp  
-    CartWalk/linear_algebra.cpp  
-    CartWalk/math_basics.cpp  
-    CartWalk/math_log.cpp  
-    CartWalk/SigmabanLeg.cpp
-    CartWalk/CartWalkProxy.cpp  
-    CartWalk/CartWalkGradient.cpp  
-    # Concepts/HumanoidModelConcept.cpp
-    # Concepts/HumanoidSensorsModelConcept.cpp
-    # Concepts/FootStepDifferentiatorConcept.cpp
-    # Concepts/FootStepIntegratorConcept.cpp
-    # Concepts/FallDetectorConcept.cpp
     LinearRegression/SimpleLinearRegression.cpp
     LinearRegression/MedianLinearRegression.cpp
     Gradient/FiniteDifferenceGradient.cpp
@@ -134,7 +122,6 @@ set(SOURCES_FILES
     TrajectoryGeneration/TrajectoryGeneration.cpp
     TrajectoryGeneration/TrajectoryUtils.cpp
     LegIK/LegIK.cpp
-    IKWalk/IKWalk.cpp
     QuinticWalk/Footstep.cpp
     QuinticWalk/QuinticExperiment.cpp
     QuinticWalk/QuinticWalk.cpp
