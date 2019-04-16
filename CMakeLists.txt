@@ -103,7 +103,6 @@ set(SOURCES_FILES
     Model/RBDLRootUpdate.cpp
     Model/RBDLClosedLoop.cpp
     Model/RBDLContactLCP.cpp
-    Model/NullSpace.cpp
     Model/ForwardSimulation.cpp
     Model/HumanoidSimulation.cpp
     Model/JointModel.cpp
