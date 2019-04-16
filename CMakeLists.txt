@@ -19,8 +19,6 @@ link_directories(${OpenCV_DIR}/lib ${OpenCV_DIR}/3rdparty/lib)
 
 set(CATKIN_DEPENDENCIES
   eigen
-  lwpr
-  libgp
   libcmaes
   rbdl_urdfreader
   rhoban_utils
@@ -41,7 +39,7 @@ find_package(RhAL)
 catkin_package(
   INCLUDE_DIRS . ${OpenCV_DIR}
   LIBRARIES model ${OpenCV_LIBS}
-  CATKIN_DEPENDS eigen lwpr libgp libcmaes rbdl_urdfreader
+  CATKIN_DEPENDS eigen libcmaes rbdl_urdfreader
 )
 
 #Includes directories lists
@@ -83,11 +81,11 @@ set(SOURCES_FILES
     CartWalk/SigmabanLeg.cpp
     CartWalk/CartWalkProxy.cpp  
     CartWalk/CartWalkGradient.cpp  
-    Concepts/HumanoidModelConcept.cpp
-    Concepts/HumanoidSensorsModelConcept.cpp
-    Concepts/FootStepDifferentiatorConcept.cpp
-    Concepts/FootStepIntegratorConcept.cpp
-    Concepts/FallDetectorConcept.cpp
+    # Concepts/HumanoidModelConcept.cpp
+    # Concepts/HumanoidSensorsModelConcept.cpp
+    # Concepts/FootStepDifferentiatorConcept.cpp
+    # Concepts/FootStepIntegratorConcept.cpp
+    # Concepts/FallDetectorConcept.cpp
     LinearRegression/SimpleLinearRegression.cpp
     LinearRegression/MedianLinearRegression.cpp
     Gradient/FiniteDifferenceGradient.cpp
@@ -98,11 +96,9 @@ set(SOURCES_FILES
     Utils/Scheduling.cpp
     Utils/Differentiation.cpp
     Utils/NewtonBinomial.cpp
-    Utils/LWPRUtils.cpp
     Utils/RandomWalk.cpp
     Utils/RandomVelocitySpline.cpp
     Utils/IterativeLearningControl.cpp
-    Utils/LWPRInputsOptimization.cpp
     Utils/EncoderFilter.cpp
     Utils/ComputeModelData.cpp
     Utils/FileEigen.cpp
@@ -142,7 +138,7 @@ set(SOURCES_FILES
     QuinticWalk/Footstep.cpp
     QuinticWalk/QuinticExperiment.cpp
     QuinticWalk/QuinticWalk.cpp
-    TimeSeries/SeriesUtils.cpp
+    # TimeSeries/SeriesUtils.cpp
     DMP/DMP.cpp
     DMP/DMPSpline.cpp
     LCPMobyDrake/LCPSolver.cpp
