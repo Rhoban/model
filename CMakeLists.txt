@@ -126,8 +126,6 @@ set(SOURCES_FILES
     QuinticWalk/QuinticExperiment.cpp
     QuinticWalk/QuinticWalk.cpp
     # TimeSeries/SeriesUtils.cpp
-    DMP/DMP.cpp
-    DMP/DMPSpline.cpp
     LCPMobyDrake/LCPSolver.cpp
     TrajectoryDefinition/CommonTrajs.cpp
     TrajectoryDefinition/TrajKickSingle.cpp
