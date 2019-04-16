@@ -214,7 +214,7 @@ private:
    */
   void checkAndUpdateCleatsState(bool& isNeedLCPUpdate, bool& isNeedImpulse);
 
-  void findActiveConstraintsLCP();
+  // void findActiveConstraintsLCP();
 };
 
 }  // namespace Leph

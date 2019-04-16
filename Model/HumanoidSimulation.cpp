@@ -265,7 +265,7 @@ void HumanoidSimulation::update(double dt)
     // XXX std::cout << "Compute Impulse !" << std::endl;
     _simulation.computeImpulses(tmpConstraints);
 
-    findActiveConstraintsLCP();
+    // findActiveConstraintsLCP();
     _isInitialized = true;
   }
 
@@ -538,36 +538,36 @@ void HumanoidSimulation::checkAndUpdateCleatsState(bool& isNeedLCPUpdate, bool& 
   }
 }
 
-void HumanoidSimulation::findActiveConstraintsLCP()
-{
-  // ConstraintSet allocation
-  Eigen::VectorXi isBilateralConstraint;
-  RBDL::ConstraintSet tmpConstraints = buildConstraintSet(true, true /*XXX*/, true, &isBilateralConstraint);
-  _simulation.computeContactLCP(tmpConstraints, isBilateralConstraint);
-  // XXX std::cout << "HumanoidSimulation LCP lambda=" << tmpConstraints.force.transpose() << std::endl;
+// void HumanoidSimulation::findActiveConstraintsLCP()
+// {
+//   // ConstraintSet allocation
+//   Eigen::VectorXi isBilateralConstraint;
+//   RBDL::ConstraintSet tmpConstraints = buildConstraintSet(true, true /*XXX*/, true, &isBilateralConstraint);
+//   _simulation.computeContactLCP(tmpConstraints, isBilateralConstraint);
+//   // XXX std::cout << "HumanoidSimulation LCP lambda=" << tmpConstraints.force.transpose() << std::endl;
 
-  for (auto& it : _cleats)
-  {
-    if (it.second.isContact)
-    {
-      it.second.isActive = false;
-      if (tmpConstraints.force(it.second.index) > 0.0)
-      {
-        it.second.isActive = true;
-        /* XXX
-        std::cout << "Enabling " << it.second.frame
-            << " with force=" << tmpConstraints.force(it.second.index) << std::endl;
-        */
-      }
-    }
-  }
+//   for (auto& it : _cleats)
+//   {
+//     if (it.second.isContact)
+//     {
+//       it.second.isActive = false;
+//       if (tmpConstraints.force(it.second.index) > 0.0)
+//       {
+//         it.second.isActive = true;
+//         /* XXX
+//         std::cout << "Enabling " << it.second.frame
+//             << " with force=" << tmpConstraints.force(it.second.index) << std::endl;
+//         */
+//       }
+//     }
+//   }
 
-  _constraints = buildConstraintSet(false, true /*XXX*/, true);
+//   _constraints = buildConstraintSet(false, true /*XXX*/, true);
 
-  /*
-  std::cout << "Re Compute final Impulse !" << std::endl;
-  _simulation.computeImpulses(_constraints);
-  */
-}
+//   /*
+//   std::cout << "Re Compute final Impulse !" << std::endl;
+//   _simulation.computeImpulses(_constraints);
+//   */
+// }
 
 }  // namespace Leph

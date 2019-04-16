@@ -218,11 +218,11 @@ void ForwardSimulation::computeImpulses(RBDL::ConstraintSet& constraints)
                                               RBDLMath::LinearSolverFullPivHouseholderQR);
 }
 
-void ForwardSimulation::computeContactLCP(RBDL::ConstraintSet& constraints,
-                                          const Eigen::VectorXi& isBilateralConstraint)
-{
-  _model->resolveContactConstraintLCP(constraints, isBilateralConstraint, _positions, _velocities, _jointTorques,
-                                      _inertiaOffsets);
-}
+// void ForwardSimulation::computeContactLCP(RBDL::ConstraintSet& constraints,
+//                                           const Eigen::VectorXi& isBilateralConstraint)
+// {
+//   _model->resolveContactConstraintLCP(constraints, isBilateralConstraint, _positions, _velocities, _jointTorques,
+//                                       _inertiaOffsets);
+// }
 
 }  // namespace Leph

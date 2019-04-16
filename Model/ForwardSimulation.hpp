@@ -82,7 +82,7 @@ public:
    * and non zero elements) is assigned in force
    * field of constraint set.
    */
-  void computeContactLCP(RBDL::ConstraintSet& constraints, const Eigen::VectorXi& isBilateralConstraint);
+  // void computeContactLCP(RBDL::ConstraintSet& constraints, const Eigen::VectorXi& isBilateralConstraint);
 
 private:
   /**

@@ -393,9 +393,9 @@ public:
    * (zeros and non zeros) are assigned
    * to ConstraintSet force field.
    */
-  void resolveContactConstraintLCP(RBDL::ConstraintSet& constraints, const Eigen::VectorXi& isBilateralConstraint,
-                                   const Eigen::VectorXd& position, const Eigen::VectorXd& velocity,
-                                   const Eigen::VectorXd& torque, const Eigen::VectorXd& inertiaOffset);
+  // void resolveContactConstraintLCP(RBDL::ConstraintSet& constraints, const Eigen::VectorXi& isBilateralConstraint,
+  //                                  const Eigen::VectorXd& position, const Eigen::VectorXd& velocity,
+  //                                  const Eigen::VectorXd& torque, const Eigen::VectorXd& inertiaOffset);
 
   /**
    * Return optionaly non zero aligned axis bounding box

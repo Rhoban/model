@@ -2,7 +2,7 @@
 #include <cmath>
 #include "Model/Model.hpp"
 #include "Model/RBDLClosedLoop.h"
-#include "Model/RBDLContactLCP.h"
+// #include "Model/RBDLContactLCP.h"
 
 namespace Leph
 {
@@ -953,12 +953,12 @@ Eigen::VectorXd Model::impulseContactsCustom(RBDL::ConstraintSet& constraints, c
   return constraints.x.segment(0, sizeDOF);
 }
 
-void Model::resolveContactConstraintLCP(RBDL::ConstraintSet& constraints, const Eigen::VectorXi& isBilateralConstraint,
-                                        const Eigen::VectorXd& position, const Eigen::VectorXd& velocity,
-                                        const Eigen::VectorXd& torque, const Eigen::VectorXd& inertiaOffset)
-{
-  RBDLContactLCP(_model, position, velocity, torque, inertiaOffset, constraints, isBilateralConstraint);
-}
+// void Model::resolveContactConstraintLCP(RBDL::ConstraintSet& constraints, const Eigen::VectorXi& isBilateralConstraint,
+//                                         const Eigen::VectorXd& position, const Eigen::VectorXd& velocity,
+//                                         const Eigen::VectorXd& torque, const Eigen::VectorXd& inertiaOffset)
+// {
+//   RBDLContactLCP(_model, position, velocity, torque, inertiaOffset, constraints, isBilateralConstraint);
+// }
 
 void Model::boundingBox(size_t frameIndex, double& sizeX, double& sizeY, double& sizeZ, Eigen::Vector3d& center) const
 {

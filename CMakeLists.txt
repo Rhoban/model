@@ -101,7 +101,7 @@ set(SOURCES_FILES
     Model/InverseKinematics.cpp
     Model/RBDLRootUpdate.cpp
     Model/RBDLClosedLoop.cpp
-    Model/RBDLContactLCP.cpp
+    # Model/RBDLContactLCP.cpp
     Model/ForwardSimulation.cpp
     Model/HumanoidSimulation.cpp
     Model/JointModel.cpp
@@ -123,7 +123,7 @@ set(SOURCES_FILES
     QuinticWalk/QuinticExperiment.cpp
     QuinticWalk/QuinticWalk.cpp
     # TimeSeries/SeriesUtils.cpp
-    LCPMobyDrake/LCPSolver.cpp
+    # LCPMobyDrake/LCPSolver.cpp
     # TrajectoryDefinition/CommonTrajs.cpp
     # TrajectoryDefinition/TrajKickSingle.cpp
     # TrajectoryDefinition/TrajKickSingleContact.cpp
