@@ -124,13 +124,13 @@ set(SOURCES_FILES
     QuinticWalk/QuinticWalk.cpp
     # TimeSeries/SeriesUtils.cpp
     LCPMobyDrake/LCPSolver.cpp
-    TrajectoryDefinition/CommonTrajs.cpp
-    TrajectoryDefinition/TrajKickSingle.cpp
-    TrajectoryDefinition/TrajKickSingleContact.cpp
-    TrajectoryDefinition/TrajKickDouble.cpp
-    TrajectoryDefinition/TrajStaticPose.cpp
-    TrajectoryDefinition/TrajLegLift.cpp
-    TrajectoryDefinition/TrajWalk.cpp
+    # TrajectoryDefinition/CommonTrajs.cpp
+    # TrajectoryDefinition/TrajKickSingle.cpp
+    # TrajectoryDefinition/TrajKickSingleContact.cpp
+    # TrajectoryDefinition/TrajKickDouble.cpp
+    # TrajectoryDefinition/TrajStaticPose.cpp
+    # TrajectoryDefinition/TrajLegLift.cpp
+    # TrajectoryDefinition/TrajWalk.cpp
 )
 
 #Tests main files
