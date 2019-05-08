@@ -174,7 +174,7 @@ void CameraModel::setDistortion(const Eigen::VectorXd& distortion)
 bool CameraModel::containsPixel(const cv::Point2f& imgPos) const
 {
   bool xOk = imgPos.x >= 0 && imgPos.x < imgWidth;
-  bool yOk = imgPos.y >= 0 && imgPos.y <= imgHeight;
+  bool yOk = imgPos.y >= 0 && imgPos.y < imgHeight;
   return xOk && yOk;
 }
 
@@ -190,7 +190,7 @@ cv::Mat CameraModel::getCameraMatrix() const
 
 cv::Mat CameraModel::getDistortionCoeffs() const
 {
-  return (cv::Mat_<double>(5, 1) << radialCoeffs(0), radialCoeffs(1), tangentialCoeffs(0), tangentialCoeffs(1),
+  return (cv::Mat_<double>(1, 5) << radialCoeffs(0), radialCoeffs(1), tangentialCoeffs(0), tangentialCoeffs(1),
           radialCoeffs(2));
 }
 
@@ -229,7 +229,6 @@ cv::Point2f CameraModel::toUncorrectedImg(const cv::Point2f& imgPosCorrected) co
   std::vector<cv::Point3f> undistorted = { normalized };
   cv::projectPoints(undistorted, cv::Mat::zeros(3, 1, CV_64FC1), cv::Mat::zeros(3, 1, CV_64FC1), getCameraMatrix(),
                     getDistortionCoeffs(), distorted);
-
   return distorted[0];
 }
 
