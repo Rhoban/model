@@ -43,6 +43,11 @@ public:
   /// other internal function
   CameraModel();
 
+  /**
+   * Build a camera model from opencv representation
+   */
+  CameraModel(const cv::Mat& camera_matrix, const cv::Mat& distortion_coeffs, const cv::Size& img_size);
+
   /// Return true if the object has valid parameters
   bool isValid() const;
   std::string getInvalidMsg() const;

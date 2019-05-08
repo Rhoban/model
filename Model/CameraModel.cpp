@@ -24,7 +24,7 @@ cv::Point2f eigen2CV(const Eigen::Vector2d& p)
 
 cv::Point3f eigen2CV(const Eigen::Vector3d& p)
 {
-  return cv::Point3f(p.x(), p.y(), p.z());
+  return cv::Point3f((float)p.x(), (float)p.y(), (float)p.z());
 }
 
 namespace Leph
@@ -40,6 +40,29 @@ CameraModel::CameraModel()
   , tangentialCoeffs(Eigen::Vector2d::Zero())
 {
 }
+
+CameraModel::CameraModel(const cv::Mat& camera_matrix, const cv::Mat& distortion_coeffs, const cv::Size& img_size)
+{
+  //TODO: check type
+  focalX = camera_matrix.at<double>(0,0);
+  focalY = camera_matrix.at<double>(1,1);
+  centerX = camera_matrix.at<double>(0,2);
+  centerY = camera_matrix.at<double>(1,2);
+  if (distortion_coeffs.cols >= 4)
+  {
+    radialCoeffs(0) = distortion_coeffs.at<double>(0);
+    radialCoeffs(1) = distortion_coeffs.at<double>(1);
+    tangentialCoeffs(0) = distortion_coeffs.at<double>(2);
+    tangentialCoeffs(1) = distortion_coeffs.at<double>(3);
+  }
+  if (distortion_coeffs.cols >= 5)
+  {
+    radialCoeffs(2) = distortion_coeffs.at<double>(4);
+  }
+  imgWidth = img_size.width;
+  imgHeight = img_size.height;
+}
+
 
 bool CameraModel::isValid() const
 {
